@@ -90,11 +90,11 @@ class SoundManager {
   void playError() => _playSfxGuard('error', 'audio/error.mp3');
   void playWin() => _playSfxGuard('win', 'audio/win.mp3');
   void duckBGM() {
-    _bgmPlayer?.setVolume(0.25);
+    _bgmPlayer.setVolume(0.25);
   }
 
   void restoreBGM() {
-    _bgmPlayer?.setVolume(1.0);
+    _bgmPlayer.setVolume(1.0);
   }
 
   // ======================

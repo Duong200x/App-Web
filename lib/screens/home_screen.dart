@@ -23,7 +23,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   static const int _staleMs = 30000;
   static const Duration _roomsCleanupInterval = Duration(seconds: 20);
 
@@ -54,7 +53,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _cleanupStalePlayersInRoom(String roomId) async {
-    final roomRef = FirebaseFirestore.instance.collection(AppConstants.collectionRooms).doc(roomId);
+    final roomRef = FirebaseFirestore.instance
+        .collection(AppConstants.collectionRooms)
+        .doc(roomId);
     final now = _nowMs;
 
     try {
@@ -76,7 +77,8 @@ class _HomeScreenState extends State<HomeScreen> {
         }
 
         String hostId = (data['hostId'] ?? '').toString();
-        final hostExists = hostId.isNotEmpty && kept.any((p) => (p['uid'] ?? '').toString() == hostId);
+        final hostExists = hostId.isNotEmpty &&
+            kept.any((p) => (p['uid'] ?? '').toString() == hostId);
         if (!hostExists) {
           hostId = (kept.first['uid'] ?? '').toString();
         }
@@ -101,7 +103,6 @@ class _HomeScreenState extends State<HomeScreen> {
       await _cleanupStalePlayersInRoom('room_$i');
     }
   }
-
 
   ImageProvider _getAvatarImage(String? url) {
     if (url == null || url.isEmpty) {
@@ -160,21 +161,20 @@ class _HomeScreenState extends State<HomeScreen> {
               backgroundColor: const Color(0xFF1A1A2E),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
-                  side: const BorderSide(color: Colors.amber, width: 2)
-              ),
+                  side: const BorderSide(color: Colors.amber, width: 2)),
               title: const Text("CÀI ĐẶT",
-                  style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center
-              ),
+                  style: TextStyle(
+                      color: Colors.amber, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // 1. THANH NHẠC NỀN
-                  Row(
+                  const Row(
                     children: [
-                      const Icon(Icons.music_note, color: Colors.white70),
-                      const SizedBox(width: 10),
-                      const Text("Nhạc nền", style: TextStyle(color: Colors.white)),
+                      Icon(Icons.music_note, color: Colors.white70),
+                      SizedBox(width: 10),
+                      Text("Nhạc nền", style: TextStyle(color: Colors.white)),
                     ],
                   ),
                   Slider(
@@ -192,11 +192,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 20),
 
                   // 2. THANH HIỆU ỨNG
-                  Row(
+                  const Row(
                     children: [
-                      const Icon(Icons.volume_up, color: Colors.white70),
-                      const SizedBox(width: 10),
-                      const Text("Hiệu ứng", style: TextStyle(color: Colors.white)),
+                      Icon(Icons.volume_up, color: Colors.white70),
+                      SizedBox(width: 10),
+                      Text("Hiệu ứng", style: TextStyle(color: Colors.white)),
                     ],
                   ),
                   Slider(
@@ -217,12 +217,14 @@ class _HomeScreenState extends State<HomeScreen> {
               actions: [
                 Center(
                   child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blueGrey),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueGrey),
                     onPressed: () {
                       SoundManager().playClick();
                       Navigator.pop(context);
                     },
-                    child: const Text("ĐÓNG", style: TextStyle(color: Colors.white)),
+                    child: const Text("ĐÓNG",
+                        style: TextStyle(color: Colors.white)),
                   ),
                 )
               ],
@@ -235,7 +237,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
 // Thay thế hàm cũ bằng hàm này trong home_screen.dart
   Future<void> _initRoomsIfNeeded() async {
-    final roomsRef = FirebaseFirestore.instance.collection(AppConstants.collectionRooms);
+    final roomsRef =
+        FirebaseFirestore.instance.collection(AppConstants.collectionRooms);
 
     // Duyệt qua 5 phòng
     for (int i = 1; i <= 5; i++) {
@@ -254,7 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
           'turnDuration': 30,
           'winningScore': 15,
         });
-        print("Đã khôi phục room_$i");
+        debugPrint("Đã khôi phục room_$i");
       }
     }
   }
@@ -264,9 +267,9 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _initRoomsIfNeeded();
     SoundManager().playBGM();
-    _roomsCleanupTimer ??= Timer.periodic(_roomsCleanupInterval, (_) => _cleanupAllRoomsStale());
+    _roomsCleanupTimer ??=
+        Timer.periodic(_roomsCleanupInterval, (_) => _cleanupAllRoomsStale());
   }
-
 
   @override
   void dispose() {
@@ -275,7 +278,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-@override
+  @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.userChanges(),
@@ -311,7 +314,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const ProfileSetupScreen(isEditMode: true)),
+                          builder: (context) =>
+                              const ProfileSetupScreen(isEditMode: true)),
                     );
                   },
                   child: Container(
@@ -319,7 +323,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.amber, width: 2),
                       boxShadow: [
-                        BoxShadow(color: Colors.amber.withValues(alpha: 0.5), blurRadius: 10)
+                        BoxShadow(
+                            color: Colors.amber.withValues(alpha: 0.5),
+                            blurRadius: 10)
                       ],
                     ),
                     child: CircleAvatar(
@@ -358,7 +364,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.cyanAccent,
                             onTap: () {
                               SoundManager().playClick();
-                              Navigator.push(context, MaterialPageRoute(builder: (_) => const RulesScreen()));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => const RulesScreen()));
                             },
                           ),
                         ),
@@ -370,7 +379,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.greenAccent,
                             onTap: () {
                               SoundManager().playClick();
-                              Navigator.push(context,
+                              Navigator.push(
+                                context,
                                 MaterialPageRoute(
                                   builder: (_) => const GameBoardScreen(
                                     playerCount: 4,
@@ -390,19 +400,23 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.purpleAccent,
                             onTap: () {
                               SoundManager().playClick();
-                              Navigator.push(context, MaterialPageRoute(builder: (_) => const TestCardScreen()));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => const TestCardScreen()));
                             },
                           ),
                         ),
                       ],
                     ),
-                  ).animate().slideY(begin: -0.5, end: 0, duration: 600.ms).fadeIn(),
-
+                  )
+                      .animate()
+                      .slideY(begin: -0.5, end: 0, duration: 600.ms)
+                      .fadeIn(),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     child: Divider(color: Colors.white10),
                   ),
-
                   const Text(
                     "CHỌN BÀN CHƠI (ONLINE)",
                     style: TextStyle(
@@ -412,7 +426,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       fontSize: 12,
                     ),
                   ),
-
                   Expanded(
                     child: StreamBuilder<QuerySnapshot>(
                       stream: FirebaseFirestore.instance
@@ -421,7 +434,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       builder: (context, snapshot) {
                         if (!snapshot.hasData) {
                           return const Center(
-                              child: CircularProgressIndicator(color: Colors.amber));
+                              child: CircularProgressIndicator(
+                                  color: Colors.amber));
                         }
 
                         var rooms = snapshot.data!.docs;
@@ -429,7 +443,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         return GridView.builder(
                           padding: const EdgeInsets.all(16),
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
                             childAspectRatio: 1.1,
                             crossAxisSpacing: 16,
@@ -437,14 +452,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           itemCount: rooms.length,
                           itemBuilder: (context, index) {
-                            var room = rooms[index].data() as Map<String, dynamic>;
+                            var room =
+                                rooms[index].data() as Map<String, dynamic>;
                             final active = _activePlayers(room['players']);
                             final maxPlayers = (room['maxPlayers'] ?? 4) as int;
                             final isFull = active.length >= maxPlayers;
 
-                            return _buildNeonRoomCard(room, active.length, isFull)
+                            return _buildNeonRoomCard(
+                                    room, active.length, isFull)
                                 .animate(delay: (100 * index).ms)
-                                .scale(duration: 400.ms, curve: Curves.easeOutBack)
+                                .scale(
+                                    duration: 400.ms, curve: Curves.easeOutBack)
                                 .fadeIn();
                           },
                         );
@@ -462,9 +480,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildGlassMenuCard(
       {required IconData icon,
-        required String title,
-        required Color color,
-        required VoidCallback onTap}) {
+      required String title,
+      required Color color,
+      required VoidCallback onTap}) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: BackdropFilter(
@@ -480,7 +498,10 @@ class _HomeScreenState extends State<HomeScreen> {
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [color.withValues(alpha: 0.2), color.withValues(alpha: 0.05)],
+                colors: [
+                  color.withValues(alpha: 0.2),
+                  color.withValues(alpha: 0.05)
+                ],
               ),
             ),
             child: Column(
@@ -492,7 +513,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 8),
                 Text(title,
                     style: TextStyle(
-                        color: color, fontWeight: FontWeight.bold, fontSize: 14),
+                        color: color,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14),
                     textAlign: TextAlign.center),
               ],
             ),
@@ -505,8 +528,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildNeonRoomCard(
       Map<String, dynamic> room, int playerCount, bool isFull) {
     Color borderColor = isFull ? Colors.redAccent : Colors.cyanAccent;
-    Color glowColor =
-    isFull ? Colors.red.withValues(alpha: 0.4) : Colors.cyanAccent.withValues(alpha: 0.4);
+    Color glowColor = isFull
+        ? Colors.red.withValues(alpha: 0.4)
+        : Colors.cyanAccent.withValues(alpha: 0.4);
 
     return Container(
       decoration: BoxDecoration(
@@ -530,7 +554,8 @@ class _HomeScreenState extends State<HomeScreen> {
             SoundManager().playClick();
             if (isFull) {
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text("Phòng này đã đầy!"), backgroundColor: Colors.red));
+                  content: Text("Phòng này đã đầy!"),
+                  backgroundColor: Colors.red));
               return;
             }
             Navigator.push(
@@ -557,7 +582,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 12),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: Colors.black38,
                   borderRadius: BorderRadius.circular(20),

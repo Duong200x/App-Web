@@ -1,11 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'game_entities.dart';
-import '../full_game_data.dart';
 
 String gemToString(GemType type) => type.toString().split('.').last;
-GemType stringToGem(String str) => GemType.values.firstWhere(
-        (e) => e.toString().split('.').last == str,
-    orElse: () => GemType.white);
+GemType stringToGem(String str) =>
+    GemType.values.firstWhere((e) => e.toString().split('.').last == str,
+        orElse: () => GemType.white);
 
 class OnlinePlayerState {
   final String id;
@@ -55,10 +53,12 @@ class OnlinePlayerState {
       score: json['score'] ?? 0,
       tokens: (json['tokens'] as Map<String, dynamic>?)?.map(
             (k, v) => MapEntry(stringToGem(k), (v as num).toInt()),
-      ) ?? {},
+          ) ??
+          {},
       bonuses: (json['bonuses'] as Map<String, dynamic>?)?.map(
             (k, v) => MapEntry(stringToGem(k), (v as num).toInt()),
-      ) ?? {},
+          ) ??
+          {},
       purchasedCardIds: List<String>.from(json['purchasedCardIds'] ?? []),
       reservedCardIds: List<String>.from(json['reservedCardIds'] ?? []),
       nobleIds: List<String>.from(json['nobleIds'] ?? []),
@@ -101,21 +101,22 @@ class GameStateSnapshot {
       'visibleLevel2': visibleLevel2,
       'visibleLevel3': visibleLevel3,
       'visibleNobles': visibleNobles,
-      'players': players.map((p) => {
-        'id': p.id,
-        'name': p.name,
-        'avatarUrl': p.avatarUrl,
-        'score': p.score,
-        'tokens': p.tokens.map((k, v) => MapEntry(gemToString(k), v)),
-        'bonuses': p.bonuses.map((k, v) => MapEntry(gemToString(k), v)),
-        'purchasedCardIds': p.purchasedCardIds,
-        'reservedCardIds': p.reservedCardIds,
-        'nobleIds': p.nobleIds,
-        'lastActionTurnId': p.lastActionTurnId,
-      }).toList(),
+      'players': players
+          .map((p) => {
+                'id': p.id,
+                'name': p.name,
+                'avatarUrl': p.avatarUrl,
+                'score': p.score,
+                'tokens': p.tokens.map((k, v) => MapEntry(gemToString(k), v)),
+                'bonuses': p.bonuses.map((k, v) => MapEntry(gemToString(k), v)),
+                'purchasedCardIds': p.purchasedCardIds,
+                'reservedCardIds': p.reservedCardIds,
+                'nobleIds': p.nobleIds,
+                'lastActionTurnId': p.lastActionTurnId,
+              })
+          .toList(),
       'turnEndTime': turnEndTime,
       'winnerId': winnerId,
-
     };
   }
 
@@ -124,10 +125,10 @@ class GameStateSnapshot {
     return GameStateSnapshot(
       currentPlayerIndex: json['currentPlayerIndex'] ?? 0,
       turnId: json['turnId'] ?? 0,
-
       bankTokens: (json['bankTokens'] as Map<String, dynamic>?)?.map(
             (k, v) => MapEntry(stringToGem(k), (v as num).toInt()),
-      ) ?? {},
+          ) ??
+          {},
       visibleLevel1: List<String>.from(json['visibleLevel1'] ?? []),
       visibleLevel2: List<String>.from(json['visibleLevel2'] ?? []),
       visibleLevel3: List<String>.from(json['visibleLevel3'] ?? []),
@@ -135,7 +136,6 @@ class GameStateSnapshot {
       players: playersList.map((p) => OnlinePlayerState.fromJson(p)).toList(),
       turnEndTime: json['turnEndTime'] ?? 0,
       winnerId: json['winnerId'],
-
     );
   }
 }

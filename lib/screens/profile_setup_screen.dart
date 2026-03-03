@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../models.dart';
 import 'rules_screen.dart';
-import 'home_screen.dart';
 
 class ProfileSetupScreen extends StatefulWidget {
   final bool isEditMode;
@@ -18,7 +17,6 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   final User? currentUser = FirebaseAuth.instance.currentUser;
   final TextEditingController _nameController = TextEditingController();
   String _selectedAvatar = '';
-  bool _isLoading = false;
 
   @override
   void initState() {
@@ -55,7 +53,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
   ImageProvider _getAvatarImage(String url) {
     if (url.isEmpty) {
-      if (AvatarHelper.localAvatars.isNotEmpty) return AssetImage(AvatarHelper.localAvatars[0]);
+      if (AvatarHelper.localAvatars.isNotEmpty) {
+        return AssetImage(AvatarHelper.localAvatars[0]);
+      }
       return const AssetImage('assets/images/black.png'); // Ảnh an toàn
     }
     if (url.startsWith('http')) return NetworkImage(url);
@@ -64,7 +64,6 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
   Future<void> _saveAndContinue() async {
     if (_nameController.text.trim().isEmpty) return;
-    setState(() => _isLoading = true);
 
     try {
       // 1. Cập nhật Auth Profile (Cái này quan trọng để Home tự update)
@@ -75,7 +74,10 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
       await currentUser!.reload();
 
       // 2. Cập nhật Firestore
-      await FirebaseFirestore.instance.collection(AppConstants.collectionUsers).doc(currentUser!.uid).set({
+      await FirebaseFirestore.instance
+          .collection(AppConstants.collectionUsers)
+          .doc(currentUser!.uid)
+          .set({
         'uid': currentUser!.uid,
         'name': _nameController.text.trim(),
         'email': currentUser!.email,
@@ -86,19 +88,23 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
       if (mounted) {
         if (widget.isEditMode) {
           Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Đã cập nhật hồ sơ!")));
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Đã cập nhật hồ sơ!")));
         } else {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const RulesScreen(showEnterGameButton: true)),
+            MaterialPageRoute(
+                builder: (context) =>
+                    const RulesScreen(showEnterGameButton: true)),
           );
         }
       }
     } catch (e) {
-      print("Lỗi lưu: $e");
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Lỗi: $e")));
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
+      debugPrint("Lỗi lưu: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Lỗi: $e")));
+      }
     }
   }
 
@@ -122,33 +128,42 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
               backgroundImage: _getAvatarImage(_selectedAvatar),
             ).animate().scale(),
             const SizedBox(height: 30),
-
             TextField(
               controller: _nameController,
               style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 labelText: "Biệt danh",
                 labelStyle: const TextStyle(color: Colors.amber),
-                enabledBorder: OutlineInputBorder(borderSide: const BorderSide(color: Colors.white24), borderRadius: BorderRadius.circular(12)),
-                focusedBorder: OutlineInputBorder(borderSide: const BorderSide(color: Colors.amber), borderRadius: BorderRadius.circular(12)),
+                enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.white24),
+                    borderRadius: BorderRadius.circular(12)),
+                focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.amber),
+                    borderRadius: BorderRadius.circular(12)),
                 prefixIcon: const Icon(Icons.edit, color: Colors.amber),
               ),
             ),
             const SizedBox(height: 30),
-
-            const Align(alignment: Alignment.centerLeft, child: Text("Chọn Gương Mặt Đại Diện:", style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold))),
+            const Align(
+                alignment: Alignment.centerLeft,
+                child: Text("Chọn Gương Mặt Đại Diện:",
+                    style: TextStyle(
+                        color: Colors.white70, fontWeight: FontWeight.bold))),
             const SizedBox(height: 10),
-
             if (AvatarHelper.localAvatars.isEmpty)
               const Padding(
                 padding: EdgeInsets.all(20),
-                child: Text("Đang tải danh sách ảnh...", style: TextStyle(color: Colors.grey)),
+                child: Text("Đang tải danh sách ảnh...",
+                    style: TextStyle(color: Colors.grey)),
               )
             else
               GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4, crossAxisSpacing: 10, mainAxisSpacing: 10),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10),
                 itemCount: AvatarHelper.localAvatars.length,
                 itemBuilder: (context, index) {
                   final path = AvatarHelper.localAvatars[index];
@@ -157,15 +172,17 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                     onTap: () => setState(() => _selectedAvatar = path),
                     child: Container(
                       decoration: BoxDecoration(
-                        border: isSelected ? Border.all(color: Colors.amber, width: 3) : null,
+                        border: isSelected
+                            ? Border.all(color: Colors.amber, width: 3)
+                            : null,
                         shape: BoxShape.circle,
-                        image: DecorationImage(image: AssetImage(path), fit: BoxFit.cover),
+                        image: DecorationImage(
+                            image: AssetImage(path), fit: BoxFit.cover),
                       ),
                     ),
                   );
                 },
               ),
-
             const SizedBox(height: 40),
             SizedBox(
               width: double.infinity,
@@ -173,7 +190,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
               child: ElevatedButton(
                 onPressed: _saveAndContinue,
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
-                child: Text(widget.isEditMode ? "LƯU THAY ĐỔI" : "TIẾP TỤC >>", style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                child: Text(widget.isEditMode ? "LƯU THAY ĐỔI" : "TIẾP TỤC >>",
+                    style: const TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold)),
               ),
             ),
           ],

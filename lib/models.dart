@@ -1,6 +1,5 @@
-import 'dart:convert';
 import 'dart:math';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 class AppConstants {
@@ -16,13 +15,14 @@ class AvatarHelper {
     try {
       final manifest = await AssetManifest.loadFromAssetBundle(rootBundle);
       // Lấy danh sách file bắt đầu bằng assets/avatars/
-      localAvatars = manifest.listAssets()
+      localAvatars = manifest
+          .listAssets()
           .where((String key) => key.startsWith('assets/avatars/'))
           .toList();
 
-      print("✅ Đã tìm thấy ${localAvatars.length} avatar trong máy.");
+      debugPrint("✅ Đã tìm thấy ${localAvatars.length} avatar trong máy.");
     } catch (e) {
-      print("❌ Lỗi load avatar: $e");
+      debugPrint("❌ Lỗi load avatar: $e");
       // Fallback thủ công nếu quét lỗi (đề phòng)
       localAvatars = [
         'assets/avatars/meme_1.png', // Đảm bảo bạn có ít nhất 1 file tên này hoặc sửa theo tên file thật

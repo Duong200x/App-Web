@@ -50,8 +50,9 @@ class MobileVoiceService extends VoiceService {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'channelName': channelId, 'uid': agoraUid}),
       );
-      if (response.statusCode != 200)
+      if (response.statusCode != 200) {
         throw Exception('API ${response.statusCode}');
+      }
       final data = jsonDecode(response.body);
       token = data['token'] as String;
       appId = data['appId'] as String;

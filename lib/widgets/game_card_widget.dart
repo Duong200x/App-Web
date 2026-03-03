@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import '../models/game_entities.dart';
 import '../gem_helper.dart';
+
 class DevCardWidget extends StatefulWidget {
   final DevCard card;
   final double width;
@@ -18,7 +19,8 @@ class DevCardWidget extends StatefulWidget {
   State<DevCardWidget> createState() => _DevCardWidgetState();
 }
 
-class _DevCardWidgetState extends State<DevCardWidget> with TickerProviderStateMixin {
+class _DevCardWidgetState extends State<DevCardWidget>
+    with TickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -44,7 +46,8 @@ class _DevCardWidgetState extends State<DevCardWidget> with TickerProviderStateM
         elevation: 0,
         child: Center(
           // Zoom lên 300, tắt enableZoom để không bấm được nữa, nhưng hiệu ứng vẫn chạy
-          child: DevCardWidget(card: widget.card, width: 300, enableZoom: false),
+          child:
+              DevCardWidget(card: widget.card, width: 300, enableZoom: false),
         ),
       ),
     );
@@ -52,10 +55,27 @@ class _DevCardWidgetState extends State<DevCardWidget> with TickerProviderStateM
 
   List<Color> _getBorderColors(int level) {
     switch (level) {
-      case 1: return [const Color(0xFF00FFFF), const Color(0xFF008B8B), const Color(0xFF00FFFF)];
-      case 2: return [Colors.red, Colors.yellow, Colors.green, Colors.red];
-      case 3: return [Colors.red, Colors.orange, Colors.yellow, Colors.green, Colors.blue, Colors.purple, Colors.white, Colors.red];
-      default: return [Colors.white, Colors.grey];
+      case 1:
+        return [
+          const Color(0xFF00FFFF),
+          const Color(0xFF008B8B),
+          const Color(0xFF00FFFF)
+        ];
+      case 2:
+        return [Colors.red, Colors.yellow, Colors.green, Colors.red];
+      case 3:
+        return [
+          Colors.red,
+          Colors.orange,
+          Colors.yellow,
+          Colors.green,
+          Colors.blue,
+          Colors.purple,
+          Colors.white,
+          Colors.red
+        ];
+      default:
+        return [Colors.white, Colors.grey];
     }
   }
 
@@ -94,7 +114,8 @@ class _DevCardWidgetState extends State<DevCardWidget> with TickerProviderStateM
                   borderRadius: BorderRadius.circular(width * 0.12),
                   gradient: SweepGradient(
                     colors: borderColors,
-                    transform: GradientRotation(_controller.value * 2 * math.pi),
+                    transform:
+                        GradientRotation(_controller.value * 2 * math.pi),
                   ),
                 ),
               );
@@ -112,12 +133,18 @@ class _DevCardWidgetState extends State<DevCardWidget> with TickerProviderStateM
             color: baseColor,
             borderRadius: BorderRadius.circular(width * 0.1),
             boxShadow: [
-              BoxShadow(color: Colors.black.withValues(alpha: 0.6), blurRadius: 6, offset: const Offset(2, 2))
+              BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.6),
+                  blurRadius: 6,
+                  offset: const Offset(2, 2))
             ],
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [baseColor.withValues(alpha: 0.95), baseColor.withValues(alpha: 0.6)],
+              colors: [
+                baseColor.withValues(alpha: 0.95),
+                baseColor.withValues(alpha: 0.6)
+              ],
             ),
           ),
           child: Stack(
@@ -132,9 +159,11 @@ class _DevCardWidgetState extends State<DevCardWidget> with TickerProviderStateM
                     opacity: 0.2,
                     child: Image.asset(
                       GameAssets.getGemPath(card.bonus),
-                      width: width * 1.2, height: width * 1.2,
+                      width: width * 1.2,
+                      height: width * 1.2,
                       fit: BoxFit.cover,
-                      color: Colors.white, colorBlendMode: BlendMode.modulate,
+                      color: Colors.white,
+                      colorBlendMode: BlendMode.modulate,
                     ),
                   ),
                 ),
@@ -143,49 +172,76 @@ class _DevCardWidgetState extends State<DevCardWidget> with TickerProviderStateM
               // POINTS (ĐIỂM)
               if (card.points > 0)
                 Positioned(
-                  top: padding, left: padding,
+                  top: padding,
+                  left: padding,
                   child: Text(
                     "${card.points}",
                     style: TextStyle(
-                      color: Colors.white, fontSize: fontSizePoints, fontWeight: FontWeight.w900, fontFamily: 'serif',
-                      shadows: [Shadow(color: Colors.black, blurRadius: 4, offset: Offset(2, 2))],
+                      color: Colors.white,
+                      fontSize: fontSizePoints,
+                      fontWeight: FontWeight.w900,
+                      fontFamily: 'serif',
+                      shadows: const [
+                        Shadow(
+                            color: Colors.black,
+                            blurRadius: 4,
+                            offset: Offset(2, 2))
+                      ],
                     ),
                   ),
                 ),
 
               // BONUS ICON (ĐÁ THƯỞNG)
               Positioned(
-                top: padding, right: padding,
+                top: padding,
+                right: padding,
                 child: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    boxShadow: [BoxShadow(color: Colors.white.withValues(alpha: 0.6), blurRadius: 12, spreadRadius: 2)],
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.white.withValues(alpha: 0.6),
+                          blurRadius: 12,
+                          spreadRadius: 2)
+                    ],
                   ),
-                  child: Image.asset(GameAssets.getGemPath(card.bonus), width: iconSize, height: iconSize),
+                  child: Image.asset(GameAssets.getGemPath(card.bonus),
+                      width: iconSize, height: iconSize),
                 ),
               ),
 
               // COST (GIÁ TIỀN) - ĐÃ SỬA
               Positioned(
-                bottom: padding, left: padding,
+                bottom: padding,
+                left: padding,
                 child: SizedBox(
-                  width: width * 0.55, // Mở rộng vùng chứa để không bị cắt vì ô tròn to ra
+                  width: width *
+                      0.55, // Mở rộng vùng chứa để không bị cắt vì ô tròn to ra
                   child: Column(
-                    mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: card.cost.entries.map((entry) {
                       // Logic màu chữ: Chữ đen cho dễ nhìn, TRỪ đá đen phải dùng chữ trắng
-                      Color textColor = (entry.key == GemType.black) ? Colors.white : Colors.black;
+                      Color textColor = (entry.key == GemType.black)
+                          ? Colors.white
+                          : Colors.black;
 
                       return Padding(
                         padding: const EdgeInsets.only(top: 3),
                         child: Container(
-                          width: costCircleSize, height: costCircleSize,
+                          width: costCircleSize,
+                          height: costCircleSize,
                           decoration: BoxDecoration(
                               color: GameAssets.getGemColor(entry.key),
                               shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white, width: 1.5),
-                              boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 2, offset: Offset(1,1))]
-                          ),
+                              border:
+                                  Border.all(color: Colors.white, width: 1.5),
+                              boxShadow: const [
+                                BoxShadow(
+                                    color: Colors.black54,
+                                    blurRadius: 2,
+                                    offset: Offset(1, 1))
+                              ]),
                           child: Center(
                             child: Text(
                               "${entry.value}",
@@ -195,7 +251,10 @@ class _DevCardWidgetState extends State<DevCardWidget> with TickerProviderStateM
                                 fontSize: costFontSize,
                                 // Chỉ đổ bóng nếu là chữ trắng
                                 shadows: textColor == Colors.white
-                                    ? [const Shadow(color: Colors.black, blurRadius: 2)]
+                                    ? [
+                                        const Shadow(
+                                            color: Colors.black, blurRadius: 2)
+                                      ]
                                     : null,
                               ),
                             ),
@@ -209,21 +268,31 @@ class _DevCardWidgetState extends State<DevCardWidget> with TickerProviderStateM
 
               // LEVEL INDICATOR
               Positioned(
-                top: padding, left: 0, right: 0,
+                top: padding,
+                left: 0,
+                right: 0,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(card.level, (index) =>
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 2),
-                        child: Container(
-                          width: width * 0.06, height: width * 0.06,
-                          decoration: BoxDecoration(
-                            color: Colors.white, shape: BoxShape.circle,
-                            boxShadow: [BoxShadow(color: Colors.white.withValues(alpha: 0.8), blurRadius: 4, spreadRadius: 1)],
-                          ),
-                        ),
-                      )
-                  ),
+                  children: List.generate(
+                      card.level,
+                      (index) => Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 2),
+                            child: Container(
+                              width: width * 0.06,
+                              height: width * 0.06,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                      color:
+                                          Colors.white.withValues(alpha: 0.8),
+                                      blurRadius: 4,
+                                      spreadRadius: 1)
+                                ],
+                              ),
+                            ),
+                          )),
                 ),
               )
             ],

@@ -111,17 +111,20 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                 SoundManager().playClick();
                 Navigator.pop(ctx, false);
               },
-              child: const Text("Ở lại", style: TextStyle(color: Colors.white70)),
+              child:
+                  const Text("Ở lại", style: TextStyle(color: Colors.white70)),
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+              style:
+                  ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
               onPressed: () {
                 SoundManager().playClick();
                 Navigator.pop(ctx, true);
               },
               child: const Text(
                 "Thoát",
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -199,7 +202,8 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
               },
               child: Container(
                 padding: const EdgeInsets.all(4),
-                decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+                decoration: const BoxDecoration(
+                    color: Colors.red, shape: BoxShape.circle),
                 child: const Icon(Icons.close, size: 18, color: Colors.white),
               ),
             ),
@@ -263,7 +267,8 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
         height: 180,
         child: player.reservedCards.isEmpty
             ? const Center(
-                child: Text("Chưa có thẻ nào!", style: TextStyle(color: Colors.white70)),
+                child: Text("Chưa có thẻ nào!",
+                    style: TextStyle(color: Colors.white70)),
               )
             : ListView.separated(
                 scrollDirection: Axis.horizontal,
@@ -329,21 +334,30 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
   }
 
   void _checkAndAnimateNobles(List<Noble> oldNobles) {
-    final acquired = oldNobles.where((n) => !_game.visibleNobles.contains(n)).toList();
+    final acquired =
+        oldNobles.where((n) => !_game.visibleNobles.contains(n)).toList();
     for (final noble in acquired) {
       _playNobleAnimation(noble);
       Future.delayed(const Duration(milliseconds: 500), () {
         if (!mounted) return;
-        _showTopToast("Quý tộc đã đến thăm bạn! (+${noble.prestigePoints} điểm)", color: Colors.amber);
+        _showTopToast(
+            "Quý tộc đã đến thăm bạn! (+${noble.prestigePoints} điểm)",
+            color: Colors.amber);
       });
     }
   }
 
   void _playTokenAnimation(GemType type) {
-    final bankBox = _tokenBankKey.currentContext?.findRenderObject() as RenderBox?;
-    final profileBox = _userProfileKey.currentContext?.findRenderObject() as RenderBox?;
-    final startOffset = bankBox != null ? bankBox.localToGlobal(Offset.zero) : const Offset(100, 500);
-    final endOffset = profileBox != null ? profileBox.localToGlobal(Offset.zero) : const Offset(50, 50);
+    final bankBox =
+        _tokenBankKey.currentContext?.findRenderObject() as RenderBox?;
+    final profileBox =
+        _userProfileKey.currentContext?.findRenderObject() as RenderBox?;
+    final startOffset = bankBox != null
+        ? bankBox.localToGlobal(Offset.zero)
+        : const Offset(100, 500);
+    final endOffset = profileBox != null
+        ? profileBox.localToGlobal(Offset.zero)
+        : const Offset(50, 50);
 
     setState(() {
       _flyingAnimations.add(
@@ -366,16 +380,19 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
   void _playCardAnimation(DevCard card) {
     final screenSize = MediaQuery.of(context).size;
     final startPos = Offset(screenSize.width * 0.4, screenSize.height * 0.4);
-    final profileBox = _userProfileKey.currentContext?.findRenderObject() as RenderBox?;
-    final endPos = profileBox != null ? profileBox.localToGlobal(Offset.zero) : const Offset(50, 50);
+    final profileBox =
+        _userProfileKey.currentContext?.findRenderObject() as RenderBox?;
+    final endPos = profileBox != null
+        ? profileBox.localToGlobal(Offset.zero)
+        : const Offset(50, 50);
 
     setState(() {
       _flyingAnimations.add(
         FlyingCardAnimation(
           key: UniqueKey(),
-          child: DevCardWidget(card: card, width: 100),
           startPos: startPos,
           endPos: endPos,
+          child: DevCardWidget(card: card, width: 100),
           onComplete: () {
             if (!mounted) return;
             setState(() {
@@ -388,18 +405,24 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
   }
 
   void _playNobleAnimation(Noble noble) {
-    final nobleBox = _nobleColumnKey.currentContext?.findRenderObject() as RenderBox?;
-    final profileBox = _userProfileKey.currentContext?.findRenderObject() as RenderBox?;
-    final startOffset = nobleBox != null ? nobleBox.localToGlobal(Offset.zero) : const Offset(800, 100);
-    final endOffset = profileBox != null ? profileBox.localToGlobal(Offset.zero) : const Offset(50, 50);
+    final nobleBox =
+        _nobleColumnKey.currentContext?.findRenderObject() as RenderBox?;
+    final profileBox =
+        _userProfileKey.currentContext?.findRenderObject() as RenderBox?;
+    final startOffset = nobleBox != null
+        ? nobleBox.localToGlobal(Offset.zero)
+        : const Offset(800, 100);
+    final endOffset = profileBox != null
+        ? profileBox.localToGlobal(Offset.zero)
+        : const Offset(50, 50);
 
     setState(() {
       _flyingAnimations.add(
         FlyingCardAnimation(
           key: UniqueKey(),
-          child: NobleWidget(noble: noble, size: 80),
           startPos: startOffset,
           endPos: endOffset,
+          child: NobleWidget(noble: noble, size: 80),
           onComplete: () {
             if (!mounted) return;
             setState(() {
@@ -429,7 +452,10 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
   }
 
   Color _getTextColor(GemType type) {
-    return (type == GemType.white || type == GemType.gold || type == GemType.green || type == GemType.blue)
+    return (type == GemType.white ||
+            type == GemType.gold ||
+            type == GemType.green ||
+            type == GemType.blue)
         ? Colors.black
         : Colors.white;
   }
@@ -468,7 +494,7 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
     // Dùng PopScope (mới) thay WillPopScope (cũ).
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) async {
+      onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
         await _confirmExitGame();
       },
@@ -491,9 +517,16 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                   children: [
                     Column(
                       children: [
-                        SizedBox(height: screenHeight * 0.18, child: _buildTopPlayers(topBots)),
-                        SizedBox(height: screenHeight * 0.67, child: _buildGameBoard(botLeft, botRight, screenHeight * 0.67)),
-                        SizedBox(height: screenHeight * 0.15, child: _buildBottomBar(user, screenHeight * 0.15)),
+                        SizedBox(
+                            height: screenHeight * 0.18,
+                            child: _buildTopPlayers(topBots)),
+                        SizedBox(
+                            height: screenHeight * 0.67,
+                            child: _buildGameBoard(
+                                botLeft, botRight, screenHeight * 0.67)),
+                        SizedBox(
+                            height: screenHeight * 0.15,
+                            child: _buildBottomBar(user, screenHeight * 0.15)),
                       ],
                     ),
 
@@ -504,7 +537,8 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                       child: GestureDetector(
                         onTap: _confirmExitGame,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 8),
                           decoration: BoxDecoration(
                             color: Colors.black.withValues(alpha: 0.55),
                             borderRadius: BorderRadius.circular(12),
@@ -520,9 +554,13 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                           child: const Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.exit_to_app, color: Colors.white, size: 18),
+                              Icon(Icons.exit_to_app,
+                                  color: Colors.white, size: 18),
                               SizedBox(width: 6),
-                              Text("Thoát", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                              Text("Thoát",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold)),
                             ],
                           ),
                         ),
@@ -537,9 +575,12 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                         child: Center(
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 300),
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
                             decoration: BoxDecoration(
-                              color: _game.mustDiscardToken ? Colors.redAccent : _topMessageColor.withValues(alpha: 0.9),
+                              color: _game.mustDiscardToken
+                                  ? Colors.redAccent
+                                  : _topMessageColor.withValues(alpha: 0.9),
                               borderRadius: BorderRadius.circular(30),
                               boxShadow: [
                                 BoxShadow(
@@ -550,8 +591,13 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                               ],
                             ),
                             child: Text(
-                              _game.mustDiscardToken ? "CẢNH BÁO: QUÁ 10 TOKEN! TRẢ BỚT ĐI." : _topMessage!,
-                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                              _game.mustDiscardToken
+                                  ? "CẢNH BÁO: QUÁ 10 TOKEN! TRẢ BỚT ĐI."
+                                  : _topMessage!,
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -565,14 +611,17 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                         right: 0,
                         child: Center(
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 6),
                             decoration: BoxDecoration(
                               color: Colors.amber.withValues(alpha: 0.9),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: const Text(
                               "ĐANG CHỌN THẺ ĐỂ GIAM",
-                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
                             ),
                           ),
                         ),
@@ -588,16 +637,25 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                isReserveMode ? "XÁC NHẬN GIAM?" : "XÁC NHẬN MUA?",
-                                style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                                isReserveMode
+                                    ? "XÁC NHẬN GIAM?"
+                                    : "XÁC NHẬN MUA?",
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold),
                               ),
                               if (isReserveMode)
                                 const Padding(
                                   padding: EdgeInsets.all(8.0),
-                                  child: Text("(Nhận +1 Vàng)", style: TextStyle(color: Colors.amber)),
+                                  child: Text("(Nhận +1 Vàng)",
+                                      style: TextStyle(color: Colors.amber)),
                                 ),
                               const SizedBox(height: 30),
-                              Transform.scale(scale: 1.5, child: DevCardWidget(card: _previewCard!, width: 100)),
+                              Transform.scale(
+                                  scale: 1.5,
+                                  child: DevCardWidget(
+                                      card: _previewCard!, width: 100)),
                               const SizedBox(height: 60),
                               Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -605,7 +663,8 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                                   ElevatedButton.icon(
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.red,
-                                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 15),
                                     ),
                                     onPressed: () {
                                       SoundManager().playClick();
@@ -618,7 +677,8 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                                   ElevatedButton.icon(
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.green,
-                                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 15),
                                     ),
                                     onPressed: _confirmCardAction,
                                     icon: const Icon(Icons.check),
@@ -682,7 +742,8 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
             ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
               ),
               onPressed: () {
                 SoundManager().playClick();
@@ -692,7 +753,8 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
               icon: const Icon(Icons.refresh, color: Colors.black),
               label: const Text(
                 "QUAY VỀ MENU",
-                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -710,15 +772,23 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: topBots.map((bot) => Expanded(child: Center(child: _buildCompactPlayerProfile(bot)))).toList(),
+        children: topBots
+            .map((bot) =>
+                Expanded(child: Center(child: _buildCompactPlayerProfile(bot))))
+            .toList(),
       ),
     );
   }
 
-  Widget _buildGameBoard(Player? botLeft, Player? botRight, double boardHeight) {
+  Widget _buildGameBoard(
+      Player? botLeft, Player? botRight, double boardHeight) {
     return Row(
       children: [
-        SizedBox(width: 95, child: botLeft != null ? Center(child: _buildVerticalPlayerProfile(botLeft)) : null),
+        SizedBox(
+            width: 95,
+            child: botLeft != null
+                ? Center(child: _buildVerticalPlayerProfile(botLeft))
+                : null),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
@@ -726,12 +796,20 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
               children: [
                 Expanded(flex: 72, child: _buildCardMatrix(boardHeight)),
                 const SizedBox(width: 4),
-                Expanded(flex: 28, child: Container(key: _nobleColumnKey, child: _buildNobleColumn(boardHeight))),
+                Expanded(
+                    flex: 28,
+                    child: Container(
+                        key: _nobleColumnKey,
+                        child: _buildNobleColumn(boardHeight))),
               ],
             ),
           ),
         ),
-        SizedBox(width: 95, child: botRight != null ? Center(child: _buildVerticalPlayerProfile(botRight)) : null),
+        SizedBox(
+            width: 95,
+            child: botRight != null
+                ? Center(child: _buildVerticalPlayerProfile(botRight))
+                : null),
       ],
     );
   }
@@ -745,8 +823,15 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
       child: Row(
         children: [
-          Expanded(flex: 40, child: Container(key: _userProfileKey, child: _buildUserProfile(user, barHeight))),
-          Container(width: 1, color: Colors.white24, margin: const EdgeInsets.symmetric(vertical: 4)),
+          Expanded(
+              flex: 40,
+              child: Container(
+                  key: _userProfileKey,
+                  child: _buildUserProfile(user, barHeight))),
+          Container(
+              width: 1,
+              color: Colors.white24,
+              margin: const EdgeInsets.symmetric(vertical: 4)),
           const SizedBox(width: 4),
           Expanded(
             flex: 60,
@@ -760,7 +845,9 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                       if (!_checkTurn()) return;
                       SoundManager().playClick();
                       setState(() {
-                        if (_game.currentTurnTokens.isNotEmpty) _game.cancelSelection();
+                        if (_game.currentTurnTokens.isNotEmpty) {
+                          _game.cancelSelection();
+                        }
                         isReserveMode = !isReserveMode;
                       });
                     },
@@ -772,7 +859,12 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                         color: isReserveMode ? Colors.amber : Colors.grey[850],
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: Colors.amber, width: 2),
-                        boxShadow: isReserveMode ? [const BoxShadow(color: Colors.amber, blurRadius: 10)] : null,
+                        boxShadow: isReserveMode
+                            ? [
+                                const BoxShadow(
+                                    color: Colors.amber, blurRadius: 10)
+                              ]
+                            : null,
                       ),
                       child: Icon(
                         isReserveMode ? Icons.lock_open : Icons.lock,
@@ -780,7 +872,8 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                       ),
                     ),
                   ),
-                if (_game.currentTurnTokens.isNotEmpty && !_game.mustDiscardToken) ...[
+                if (_game.currentTurnTokens.isNotEmpty &&
+                    !_game.mustDiscardToken) ...[
                   const SizedBox(width: 8),
                   GestureDetector(
                     onTap: () => setState(() => _game.cancelSelection()),
@@ -799,7 +892,8 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                   GestureDetector(
                     onTap: () {
                       if (!_checkTurn()) return;
-                      final tokensToAnimate = List<GemType>.from(_game.currentTurnTokens);
+                      final tokensToAnimate =
+                          List<GemType>.from(_game.currentTurnTokens);
                       final success = _game.confirmSelection();
                       if (success) {
                         _showTopToast("Đã lấy token!", color: Colors.green);
@@ -835,7 +929,14 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
   }
 
   Widget _buildTokenBank(double height) {
-    final order = [GemType.gold, GemType.white, GemType.blue, GemType.green, GemType.red, GemType.black];
+    final order = [
+      GemType.gold,
+      GemType.white,
+      GemType.blue,
+      GemType.green,
+      GemType.red,
+      GemType.black
+    ];
     final tokenSize = height * 0.75;
 
     return ListView.builder(
@@ -845,7 +946,8 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
       itemCount: order.length,
       itemBuilder: (context, index) {
         final type = order[index];
-        final selectedCount = _game.currentTurnTokens.where((t) => t == type).length;
+        final selectedCount =
+            _game.currentTurnTokens.where((t) => t == type).length;
         final isSelected = selectedCount > 0;
         final isGold = type == GemType.gold;
 
@@ -859,7 +961,12 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                   decoration: isSelected
                       ? BoxDecoration(
                           shape: BoxShape.circle,
-                          boxShadow: [const BoxShadow(color: Colors.white, blurRadius: 10, spreadRadius: 1)],
+                          boxShadow: const [
+                            BoxShadow(
+                                color: Colors.white,
+                                blurRadius: 10,
+                                spreadRadius: 1)
+                          ],
                           border: Border.all(color: Colors.white, width: 2),
                         )
                       : null,
@@ -869,14 +976,17 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                     size: tokenSize,
                     onTap: () {
                       if (isGold) {
-                        _showTopToast("Dùng nút ổ khóa để Giam thẻ & Lấy vàng!", color: Colors.amber);
+                        _showTopToast("Dùng nút ổ khóa để Giam thẻ & Lấy vàng!",
+                            color: Colors.amber);
                         SoundManager().playError();
                         return;
                       }
                       if (!_checkTurn()) return;
                       if (isReserveMode) setState(() => isReserveMode = false);
                       final error = _game.selectToken(type);
-                      if (error != null) _showTopToast(error, color: Colors.orange);
+                      if (error != null) {
+                        _showTopToast(error, color: Colors.orange);
+                      }
                     },
                   ),
                 ),
@@ -886,10 +996,14 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                     right: 0,
                     child: Container(
                       padding: const EdgeInsets.all(4),
-                      decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+                      decoration: const BoxDecoration(
+                          color: Colors.red, shape: BoxShape.circle),
                       child: Text(
                         "x$selectedCount",
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 10),
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10),
                       ),
                     ),
                   ),
@@ -899,8 +1013,10 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                     right: 0,
                     child: Container(
                       padding: const EdgeInsets.all(3),
-                      decoration: const BoxDecoration(color: Colors.green, shape: BoxShape.circle),
-                      child: const Icon(Icons.check, size: 10, color: Colors.white),
+                      decoration: const BoxDecoration(
+                          color: Colors.green, shape: BoxShape.circle),
+                      child: const Icon(Icons.check,
+                          size: 10, color: Colors.white),
                     ),
                   ),
               ],
@@ -928,7 +1044,8 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
     );
   }
 
-  Widget _buildCardRow(int level, List<DevCard> cards, double width, double height) {
+  Widget _buildCardRow(
+      int level, List<DevCard> cards, double width, double height) {
     return SizedBox(
       height: height,
       child: Row(
@@ -938,7 +1055,8 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
             onTap: () {
               // User: giam thẻ ẩn bằng cách bấm vào mặt sau ổ bài khi đang ở chế độ giam.
               if (!isReserveMode) {
-                _showTopToast("Bật chế độ Giam (nút ổ khóa) để giam thẻ ẨN.", color: Colors.amber);
+                _showTopToast("Bật chế độ Giam (nút ổ khóa) để giam thẻ ẨN.",
+                    color: Colors.amber);
                 SoundManager().playError();
                 return;
               }
@@ -958,14 +1076,21 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                     final offsetAnimation = Tween<Offset>(
                       begin: const Offset(-1.0, 0.0),
                       end: Offset.zero,
-                    ).animate(CurvedAnimation(parent: animation, curve: Curves.easeInOut));
-                    return SlideTransition(position: offsetAnimation, child: child);
+                    ).animate(CurvedAnimation(
+                        parent: animation, curve: Curves.easeInOut));
+                    return SlideTransition(
+                        position: offsetAnimation, child: child);
                   },
                   child: Container(
                     key: ValueKey(card.id),
                     decoration: isReserveMode
                         ? BoxDecoration(
-                            boxShadow: [BoxShadow(color: Colors.amber.withValues(alpha: 0.6), blurRadius: 10, spreadRadius: 1)],
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.amber.withValues(alpha: 0.6),
+                                  blurRadius: 10,
+                                  spreadRadius: 1)
+                            ],
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(color: Colors.amber, width: 2),
                           )
@@ -975,7 +1100,7 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                 ),
               ),
             );
-          }).toList(),
+          }),
         ],
       ),
     );
@@ -990,7 +1115,9 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
           alignment: WrapAlignment.center,
           runSpacing: 4,
           spacing: 4,
-          children: _game.visibleNobles.map((n) => NobleWidget(noble: n, size: nobleSize)).toList(),
+          children: _game.visibleNobles
+              .map((n) => NobleWidget(noble: n, size: nobleSize))
+              .toList(),
         ),
       ),
     );
@@ -1013,12 +1140,22 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              CircleAvatar(radius: 12, backgroundColor: player.color, child: const Icon(Icons.person, size: 14, color: Colors.white)),
+              CircleAvatar(
+                  radius: 12,
+                  backgroundColor: player.color,
+                  child:
+                      const Icon(Icons.person, size: 14, color: Colors.white)),
               const SizedBox(width: 6),
               Column(
                 children: [
-                  Text(player.name, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
-                  Text("⭐${player.score}", style: const TextStyle(color: Colors.amber, fontSize: 10)),
+                  Text(player.name,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold)),
+                  Text("⭐${player.score}",
+                      style:
+                          const TextStyle(color: Colors.amber, fontSize: 10)),
                 ],
               ),
               const SizedBox(width: 6),
@@ -1055,9 +1192,15 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
           ),
           child: Column(
             children: [
-              CircleAvatar(radius: 16, backgroundColor: player.color, child: const Icon(Icons.person, size: 18, color: Colors.white)),
-              Text(player.name, style: const TextStyle(color: Colors.white, fontSize: 12)),
-              Text("⭐${player.score}", style: const TextStyle(color: Colors.amber, fontSize: 12)),
+              CircleAvatar(
+                  radius: 16,
+                  backgroundColor: player.color,
+                  child:
+                      const Icon(Icons.person, size: 18, color: Colors.white)),
+              Text(player.name,
+                  style: const TextStyle(color: Colors.white, fontSize: 12)),
+              Text("⭐${player.score}",
+                  style: const TextStyle(color: Colors.amber, fontSize: 12)),
               const SizedBox(height: 6),
               _buildGridAssets(player.tokens, isChip: true),
               const SizedBox(height: 4),
@@ -1073,7 +1216,14 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
   }
 
   Widget _buildGridAssets(Map<GemType, int> data, {required bool isChip}) {
-    final order = [GemType.white, GemType.blue, GemType.green, GemType.red, GemType.black, if (isChip) GemType.gold];
+    final order = [
+      GemType.white,
+      GemType.blue,
+      GemType.green,
+      GemType.red,
+      GemType.black,
+      if (isChip) GemType.gold
+    ];
 
     return Wrap(
       spacing: 2,
@@ -1092,7 +1242,10 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
           child: Center(
             child: Text(
               "$val",
-              style: TextStyle(fontSize: 10, color: _getTextColor(type), fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 10,
+                  color: _getTextColor(type),
+                  fontWeight: FontWeight.bold),
             ),
           ),
         );
@@ -1113,18 +1266,26 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
             CircleAvatar(
               radius: height * 0.22,
               backgroundColor: Colors.amber,
-              child: Icon(Icons.person, size: height * 0.25, color: Colors.black),
+              child:
+                  Icon(Icons.person, size: height * 0.25, color: Colors.black),
             ),
             const SizedBox(width: 8),
             Column(
               children: [
-                const Text("BẠN", style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
-                Text("${user.score} VP", style: const TextStyle(color: Colors.white70)),
+                const Text("BẠN",
+                    style: TextStyle(
+                        color: Colors.amber, fontWeight: FontWeight.bold)),
+                Text("${user.score} VP",
+                    style: const TextStyle(color: Colors.white70)),
               ],
             ),
             const SizedBox(width: 15),
             _buildUserAssetRow(user, user.bonuses, isChip: false),
-            Container(width: 1, height: height * 0.6, color: Colors.white24, margin: const EdgeInsets.symmetric(horizontal: 8)),
+            Container(
+                width: 1,
+                height: height * 0.6,
+                color: Colors.white24,
+                margin: const EdgeInsets.symmetric(horizontal: 8)),
             _buildUserAssetRow(user, user.tokens, isChip: true),
             _buildNobleIndicator(user.nobleCount, isVertical: false),
             if (user.reservedCards.isNotEmpty)
@@ -1132,19 +1293,25 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                 onTap: () => _showReservedDialog(context, user),
                 child: Container(
                   margin: const EdgeInsets.only(left: 8),
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
                     color: Colors.yellowAccent.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(4),
-                    border: Border.all(color: Colors.yellowAccent.withValues(alpha: 0.5)),
+                    border: Border.all(
+                        color: Colors.yellowAccent.withValues(alpha: 0.5)),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.lock, color: Colors.yellowAccent, size: 12),
+                      const Icon(Icons.lock,
+                          color: Colors.yellowAccent, size: 12),
                       const SizedBox(width: 2),
                       Text(
                         "${user.reservedCards.length}",
-                        style: const TextStyle(color: Colors.yellowAccent, fontSize: 12, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                            color: Colors.yellowAccent,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
@@ -1159,7 +1326,9 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
   Widget _buildNobleIndicator(int count, {bool isVertical = false}) {
     if (count <= 0) return const SizedBox.shrink();
     return Container(
-      margin: isVertical ? const EdgeInsets.only(top: 4) : const EdgeInsets.only(left: 6),
+      margin: isVertical
+          ? const EdgeInsets.only(top: 4)
+          : const EdgeInsets.only(left: 6),
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
       decoration: BoxDecoration(
         color: Colors.amber.withValues(alpha: 0.2),
@@ -1169,7 +1338,12 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (count > 1) Text("x$count", style: const TextStyle(fontSize: 9, color: Colors.amber, fontWeight: FontWeight.bold)),
+          if (count > 1)
+            Text("x$count",
+                style: const TextStyle(
+                    fontSize: 9,
+                    color: Colors.amber,
+                    fontWeight: FontWeight.bold)),
           if (count > 1) const SizedBox(width: 2),
           const Text("👑", style: TextStyle(fontSize: 10)),
         ],
@@ -1178,11 +1352,20 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
   }
 
   Widget _buildMiniStatsRow(Map<GemType, int> data, {required bool isChip}) {
-    final order = [GemType.white, GemType.blue, GemType.green, GemType.red, GemType.black, if (isChip) GemType.gold];
+    final order = [
+      GemType.white,
+      GemType.blue,
+      GemType.green,
+      GemType.red,
+      GemType.black,
+      if (isChip) GemType.gold
+    ];
     return Wrap(
       spacing: 1,
       runSpacing: 1,
-      children: order.map((type) => _buildStatItem(type, data[type] ?? 0, isChip)).toList(),
+      children: order
+          .map((type) => _buildStatItem(type, data[type] ?? 0, isChip))
+          .toList(),
     );
   }
 
@@ -1199,14 +1382,25 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
       child: Center(
         child: Text(
           "$val",
-          style: TextStyle(fontSize: 7, color: _getTextColor(type), fontWeight: FontWeight.bold),
+          style: TextStyle(
+              fontSize: 7,
+              color: _getTextColor(type),
+              fontWeight: FontWeight.bold),
         ),
       ),
     );
   }
 
-  Widget _buildUserAssetRow(Player player, Map<GemType, int> data, {required bool isChip}) {
-    final order = [GemType.white, GemType.blue, GemType.green, GemType.red, GemType.black, if (isChip) GemType.gold];
+  Widget _buildUserAssetRow(Player player, Map<GemType, int> data,
+      {required bool isChip}) {
+    final order = [
+      GemType.white,
+      GemType.blue,
+      GemType.green,
+      GemType.red,
+      GemType.black,
+      if (isChip) GemType.gold
+    ];
 
     return Row(
       children: order.map((type) {
@@ -1221,12 +1415,17 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
             color: _getGemColor(type),
             shape: isChip ? BoxShape.circle : BoxShape.rectangle,
             borderRadius: isChip ? null : BorderRadius.circular(2),
-            border: canDiscard ? Border.all(color: Colors.redAccent, width: 2) : null,
+            border: canDiscard
+                ? Border.all(color: Colors.redAccent, width: 2)
+                : null,
           ),
           child: Center(
             child: Text(
               "$val",
-              style: TextStyle(fontSize: 9, color: _getTextColor(type), fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 9,
+                  color: _getTextColor(type),
+                  fontWeight: FontWeight.bold),
             ),
           ),
         );

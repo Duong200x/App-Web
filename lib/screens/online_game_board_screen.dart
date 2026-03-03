@@ -730,9 +730,9 @@ class _OnlineGameBoardScreenState extends State<OnlineGameBoardScreen> {
       _flyingAnimations.add(
         FlyingCardAnimation(
           key: UniqueKey(),
-          child: DevCardWidget(card: card, width: 100),
           startPos: startPos,
           endPos: endPos,
+          child: DevCardWidget(card: card, width: 100),
           onComplete: () {
             if (!mounted) return;
             setState(() {
@@ -998,10 +998,11 @@ class _OnlineGameBoardScreenState extends State<OnlineGameBoardScreen> {
     final v3 = st.visibleLevel3.map(_card).toList();
     final nobles = st.visibleNobles.map(_noble).toList();
 
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
         await _confirmExitGame();
-        return false;
       },
       child: Scaffold(
         backgroundColor: const Color(0xFF0D1117),
@@ -1073,7 +1074,9 @@ class _OnlineGameBoardScreenState extends State<OnlineGameBoardScreen> {
                                 boxShadow: _isMicOn && _myVoiceLevel > 0.1
                                     ? [
                                         BoxShadow(
-                                          color: Colors.greenAccent.withValues(alpha: (0.3 + _myVoiceLevel * 0.4)),
+                                          color: Colors.greenAccent.withValues(
+                                              alpha:
+                                                  (0.3 + _myVoiceLevel * 0.4)),
                                           blurRadius: 4 + _myVoiceLevel * 8,
                                           spreadRadius: _myVoiceLevel * 4,
                                         )
@@ -1294,14 +1297,15 @@ class _OnlineGameBoardScreenState extends State<OnlineGameBoardScreen> {
 
     SoundManager().stopBGM();
 
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
         // ⛔ ÉP BACK → THOÁT GAME + GIẢI PHÓNG MIC
         try {
           await _voiceService.dispose();
         } catch (_) {}
         SystemNavigator.pop();
-        return false;
       },
       child: Scaffold(
         backgroundColor: Colors.black,
@@ -1598,8 +1602,8 @@ class _OnlineGameBoardScreenState extends State<OnlineGameBoardScreen> {
                   decoration: isSelected
                       ? BoxDecoration(
                           shape: BoxShape.circle,
-                          boxShadow: [
-                            const BoxShadow(
+                          boxShadow: const [
+                            BoxShadow(
                                 color: Colors.white,
                                 blurRadius: 10,
                                 spreadRadius: 1)
@@ -1617,8 +1621,9 @@ class _OnlineGameBoardScreenState extends State<OnlineGameBoardScreen> {
                             color: Colors.amber);
                         SoundManager().playError();
                       } else {
-                        if (isReserveMode)
+                        if (isReserveMode) {
                           setState(() => isReserveMode = false);
+                        }
                         _selectToken(type);
                       }
                     },
@@ -1692,7 +1697,7 @@ class _OnlineGameBoardScreenState extends State<OnlineGameBoardScreen> {
                     decoration: BoxDecoration(
                       boxShadow: [
                         BoxShadow(
-                                    color: Colors.amber.withValues(alpha: 0.6),
+                            color: Colors.amber.withValues(alpha: 0.6),
                             blurRadius: 10,
                             spreadRadius: 1)
                       ],
@@ -1739,7 +1744,7 @@ class _OnlineGameBoardScreenState extends State<OnlineGameBoardScreen> {
                 ),
               ),
             );
-          }).toList(),
+          }),
         ],
       ),
     );

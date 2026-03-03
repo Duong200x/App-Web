@@ -74,7 +74,11 @@ class GameLogic {
 
     if (playerCount <= 4) {
       goldTokens = 5;
-      tokensPerColor = (playerCount == 2) ? 4 : (playerCount == 3) ? 5 : 7;
+      tokensPerColor = (playerCount == 2)
+          ? 4
+          : (playerCount == 3)
+              ? 5
+              : 7;
     } else {
       goldTokens = 9;
       tokensPerColor = playerCount * 2;
@@ -109,9 +113,15 @@ class GameLogic {
     visibleLevel1 = [];
     visibleLevel2 = [];
     visibleLevel3 = [];
-    for (int i = 0; i < 4; i++) _drawNewCard(1);
-    for (int i = 0; i < 4; i++) _drawNewCard(2);
-    for (int i = 0; i < 4; i++) _drawNewCard(3);
+    for (int i = 0; i < 4; i++) {
+      _drawNewCard(1);
+    }
+    for (int i = 0; i < 4; i++) {
+      _drawNewCard(2);
+    }
+    for (int i = 0; i < 4; i++) {
+      _drawNewCard(3);
+    }
 
     List<Noble> allNobles = List<Noble>.from(FullGameData.nobles)
       ..shuffle(random);
@@ -362,7 +372,9 @@ class GameLogic {
   /// This is mainly used for the human player in training mode.
   /// Returns (card, error). If success, card is the actual drawn card.
   ReserveDeckResult reserveHiddenFromDeck(int level) {
-    if (_isProcessingTurn) return const ReserveDeckResult(error: "Đang xử lý lượt...");
+    if (_isProcessingTurn) {
+      return const ReserveDeckResult(error: "Đang xử lý lượt...");
+    }
     if (_isPaused) return const ReserveDeckResult(error: "Đang tạm dừng...");
 
     if (mustDiscardToken) {
@@ -379,13 +391,19 @@ class GameLogic {
 
     DevCard? drawn;
     if (level == 1) {
-      if (deckLevel1.isEmpty) return const ReserveDeckResult(error: "Hết bài cấp 1!");
+      if (deckLevel1.isEmpty) {
+        return const ReserveDeckResult(error: "Hết bài cấp 1!");
+      }
       drawn = deckLevel1.removeAt(0);
     } else if (level == 2) {
-      if (deckLevel2.isEmpty) return const ReserveDeckResult(error: "Hết bài cấp 2!");
+      if (deckLevel2.isEmpty) {
+        return const ReserveDeckResult(error: "Hết bài cấp 2!");
+      }
       drawn = deckLevel2.removeAt(0);
     } else if (level == 3) {
-      if (deckLevel3.isEmpty) return const ReserveDeckResult(error: "Hết bài cấp 3!");
+      if (deckLevel3.isEmpty) {
+        return const ReserveDeckResult(error: "Hết bài cấp 3!");
+      }
       drawn = deckLevel3.removeAt(0);
     } else {
       return const ReserveDeckResult(error: "Level không hợp lệ!");
@@ -403,7 +421,6 @@ class GameLogic {
     _tryEndTurn();
     return ReserveDeckResult(card: drawn);
   }
-
 
   void _removeAndRefill(DevCard card) {
     if (visibleLevel1.contains(card)) {
@@ -639,7 +656,8 @@ class GameLogic {
         int missing = toPay - have;
         player.tokens[type] = 0;
         bankTokens[type] = (bankTokens[type] ?? 0) + have;
-        player.tokens[GemType.gold] = (player.tokens[GemType.gold] ?? 0) - missing;
+        player.tokens[GemType.gold] =
+            (player.tokens[GemType.gold] ?? 0) - missing;
         bankTokens[GemType.gold] = (bankTokens[GemType.gold] ?? 0) + missing;
       }
     });
@@ -661,7 +679,9 @@ class GameLogic {
         SoundManager().playBuy();
       }
     }
-    for (var n in acquired) visibleNobles.remove(n);
+    for (var n in acquired) {
+      visibleNobles.remove(n);
+    }
   }
 
   void endTurn() {

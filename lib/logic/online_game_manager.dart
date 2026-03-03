@@ -64,31 +64,34 @@ class OnlineGameManager {
     return _uidOf(players.first);
   }
 
-  List<Map<String, dynamic>> _rebuildHostFlags(List<Map<String, dynamic>> players, String hostId) {
+  List<Map<String, dynamic>> _rebuildHostFlags(
+      List<Map<String, dynamic>> players, String hostId) {
     return players
         .map((p) => {
-      ...p,
-      'isHost': _uidOf(p) == hostId,
-    })
+              ...p,
+              'isHost': _uidOf(p) == hostId,
+            })
         .toList();
   }
 
   Future<void> _resetRoomToWaiting(
-      Transaction tx,
-      DocumentReference<Map<String, dynamic>> roomRef,
-      Map<String, dynamic> roomData, {
-        required bool clearPlayers,
-        String endedReason = '',
-        bool keepHostPresence = false,
-        Map<String, dynamic>? hostPresence,
-      }) async {
+    Transaction tx,
+    DocumentReference<Map<String, dynamic>> roomRef,
+    Map<String, dynamic> roomData, {
+    required bool clearPlayers,
+    String endedReason = '',
+    bool keepHostPresence = false,
+    Map<String, dynamic>? hostPresence,
+  }) async {
     final int sessionId = _getSessionId(roomData) + 1;
 
     final update = <String, dynamic>{
       'status': 'waiting',
       'sessionId': sessionId,
       'endedReason': endedReason,
-      'endedAt': endedReason.isEmpty ? FieldValue.delete() : FieldValue.serverTimestamp(),
+      'endedAt': endedReason.isEmpty
+          ? FieldValue.delete()
+          : FieldValue.serverTimestamp(),
       'gameState': FieldValue.delete(),
       'decks': FieldValue.delete(),
       'winnerId': FieldValue.delete(),
@@ -97,26 +100,23 @@ class OnlineGameManager {
     if (clearPlayers) {
       update['hostId'] = '';
       update['players'] = [];
-    }
-    else if (keepHostPresence && hostPresence != null) {
+    } else if (keepHostPresence && hostPresence != null) {
       final hostId = _uidOf(hostPresence);
       update['hostId'] = hostId;
       update['players'] = [
         {
           ...hostPresence,
           'score': 0,
-          'tokens': { for (var g in GemType.values) gemToString(g): 0 },
-          'bonuses': { for (var g in GemType.values) gemToString(g): 0 },
+          'tokens': {for (var g in GemType.values) gemToString(g): 0},
+          'bonuses': {for (var g in GemType.values) gemToString(g): 0},
           'purchasedCardIds': [],
           'reservedCardIds': [],
           'nobleIds': [],
         }
       ];
-    }
-    else {
+    } else {
       final players = _playersFrom(roomData['players']);
-      final hostId =
-          roomData['hostId']?.toString() ?? _pickHostId(players);
+      final hostId = roomData['hostId']?.toString() ?? _pickHostId(players);
 
       update['hostId'] = hostId;
       update['players'] = _rebuildHostFlags(players, hostId);
@@ -126,12 +126,13 @@ class OnlineGameManager {
 
   // Kết thúc ván do host rời / host stale: đá toàn bộ client khỏi phòng.
   Future<void> endGameHostLeft(String roomId) async {
-    final roomRef = _firestore.collection(AppConstants.collectionRooms).doc(roomId);
+    final roomRef =
+        _firestore.collection(AppConstants.collectionRooms).doc(roomId);
     await _firestore.runTransaction((tx) async {
       final snap = await tx.get(roomRef);
       if (!snap.exists) return;
 
-      final data = (snap.data() ?? <String, dynamic>{}) as Map<String, dynamic>;
+      final data = snap.data() ?? <String, dynamic>{};
       await _resetRoomToWaiting(
         tx,
         roomRef,
@@ -141,9 +142,10 @@ class OnlineGameManager {
       );
     });
   }
+
   Future<void> endGameNormally(String roomId) async {
     final roomRef =
-    _firestore.collection(AppConstants.collectionRooms).doc(roomId);
+        _firestore.collection(AppConstants.collectionRooms).doc(roomId);
 
     await _firestore.runTransaction((tx) async {
       final snap = await tx.get(roomRef);
@@ -166,7 +168,7 @@ class OnlineGameManager {
 
       final hostId = (data['hostId'] ?? '').toString();
       final hostPresence = players.firstWhere(
-            (p) => _uidOf(p) == hostId,
+        (p) => _uidOf(p) == hostId,
         orElse: () => players.first,
       );
 
@@ -181,29 +183,35 @@ class OnlineGameManager {
       );
     });
   }
+
   // Non-host rời khi đang chơi: xoá presence + loại khỏi gameState để ván không kẹt lượt.
   Future<void> leaveGameAsNonHost(String roomId, String uid) async {
-    final roomRef = _firestore.collection(AppConstants.collectionRooms).doc(roomId);
+    final roomRef =
+        _firestore.collection(AppConstants.collectionRooms).doc(roomId);
 
     await _firestore.runTransaction((tx) async {
       final snap = await tx.get(roomRef);
       if (!snap.exists) return;
 
-      final data = (snap.data() ?? <String, dynamic>{}) as Map<String, dynamic>;
+      final data = snap.data() ?? <String, dynamic>{};
       final status = (data['status'] ?? 'waiting').toString();
       final hostId = (data['hostId'] ?? '').toString();
 
       // host leave -> end game
       if (uid.isNotEmpty && uid == hostId) {
-        await _resetRoomToWaiting(tx, roomRef, data, clearPlayers: true, endedReason: 'host_left');
+        await _resetRoomToWaiting(tx, roomRef, data,
+            clearPlayers: true, endedReason: 'host_left');
         return;
       }
 
       // waiting: remove presence + host inheritance
       if (status != 'playing') {
-        final players = _playersFrom(data['players']).where((p) => _uidOf(p) != uid).toList();
+        final players = _playersFrom(data['players'])
+            .where((p) => _uidOf(p) != uid)
+            .toList();
         if (players.isEmpty) {
-          await _resetRoomToWaiting(tx, roomRef, data, clearPlayers: true, endedReason: '');
+          await _resetRoomToWaiting(tx, roomRef, data,
+              clearPlayers: true, endedReason: '');
           return;
         }
         String newHostId = hostId;
@@ -219,11 +227,12 @@ class OnlineGameManager {
 
       // playing
       final List<Map<String, dynamic>> playersPresence =
-      _playersFrom(data['players']).where((p) => _uidOf(p) != uid).toList();
+          _playersFrom(data['players']).where((p) => _uidOf(p) != uid).toList();
 
       final gameStateRaw = data['gameState'];
       if (gameStateRaw is! Map<String, dynamic>) {
-        await _resetRoomToWaiting(tx, roomRef, data, clearPlayers: true, endedReason: '');
+        await _resetRoomToWaiting(tx, roomRef, data,
+            clearPlayers: true, endedReason: '');
         return;
       }
 
@@ -232,7 +241,8 @@ class OnlineGameManager {
       if (removedIdx >= 0) {
         st.players.removeAt(removedIdx);
         if (st.players.isEmpty) {
-          await _resetRoomToWaiting(tx, roomRef, data, clearPlayers: true, endedReason: '');
+          await _resetRoomToWaiting(tx, roomRef, data,
+              clearPlayers: true, endedReason: '');
           return;
         }
 
@@ -247,7 +257,7 @@ class OnlineGameManager {
         // chỉ còn host => end ván, host về waiting (giữ host presence)
         if (st.players.length == 1 && st.players.first.id == hostId) {
           final hostPresence = playersPresence.firstWhere(
-                (p) => _uidOf(p) == hostId,
+            (p) => _uidOf(p) == hostId,
             orElse: () => <String, dynamic>{
               'uid': hostId,
               'name': st.players.first.name,
@@ -269,8 +279,11 @@ class OnlineGameManager {
           return;
         }
 
-        final int turnDuration = (data['turnDuration'] ?? 45) is num ? (data['turnDuration'] as num).toInt() : 45;
-        st.turnEndTime = DateTime.now().millisecondsSinceEpoch + (turnDuration * 1000);
+        final int turnDuration = (data['turnDuration'] ?? 45) is num
+            ? (data['turnDuration'] as num).toInt()
+            : 45;
+        st.turnEndTime =
+            DateTime.now().millisecondsSinceEpoch + (turnDuration * 1000);
       }
 
       tx.update(roomRef, {
@@ -282,20 +295,21 @@ class OnlineGameManager {
 
   // Dùng trong OnlineGameBoardScreen: heartbeat + kick stale + host stale => end game.
   Future<void> heartbeatAndMaintainPlayingRoom(
-      String roomId, {
-        required String uid,
-        required int nowMs,
-        int staleMs = 45000,
-      }) async {
+    String roomId, {
+    required String uid,
+    required int nowMs,
+    int staleMs = 45000,
+  }) async {
     if (uid.isEmpty) return;
 
-    final roomRef = _firestore.collection(AppConstants.collectionRooms).doc(roomId);
+    final roomRef =
+        _firestore.collection(AppConstants.collectionRooms).doc(roomId);
 
     await _firestore.runTransaction((tx) async {
       final snap = await tx.get(roomRef);
       if (!snap.exists) return;
 
-      final data = (snap.data() ?? <String, dynamic>{}) as Map<String, dynamic>;
+      final data = snap.data() ?? <String, dynamic>{};
       final status = (data['status'] ?? 'waiting').toString();
       if (status != 'playing') return;
 
@@ -310,21 +324,27 @@ class OnlineGameManager {
         };
       }
 
-      final stalePlayers = players.where((p) => _isStale(p, nowMs, staleMs)).toList();
+      final stalePlayers =
+          players.where((p) => _isStale(p, nowMs, staleMs)).toList();
 
       final hostPresence = players.where((p) => _uidOf(p) == hostId).toList();
       final bool hostMissing = hostId.isEmpty || hostPresence.isEmpty;
-      final bool hostStale = !hostMissing && _isStale(hostPresence.first, nowMs, staleMs);
+      final bool hostStale =
+          !hostMissing && _isStale(hostPresence.first, nowMs, staleMs);
 
       if (hostMissing || hostStale) {
-        await _resetRoomToWaiting(tx, roomRef, data, clearPlayers: true, endedReason: 'host_left');
+        await _resetRoomToWaiting(tx, roomRef, data,
+            clearPlayers: true, endedReason: 'host_left');
         return;
       }
 
-      final staleNonHostUids =
-      stalePlayers.map(_uidOf).where((id) => id.isNotEmpty && id != hostId).toSet();
+      final staleNonHostUids = stalePlayers
+          .map(_uidOf)
+          .where((id) => id.isNotEmpty && id != hostId)
+          .toSet();
 
-      final keptPresence = players.where((p) => !staleNonHostUids.contains(_uidOf(p))).toList();
+      final keptPresence =
+          players.where((p) => !staleNonHostUids.contains(_uidOf(p))).toList();
 
       final gameStateRaw = data['gameState'];
       if (gameStateRaw is! Map<String, dynamic>) {
@@ -346,7 +366,9 @@ class OnlineGameManager {
       if (staleNonHostUids.isNotEmpty) {
         final removedIndices = <int>[];
         for (int i = 0; i < st.players.length; i++) {
-          if (staleNonHostUids.contains(st.players[i].id)) removedIndices.add(i);
+          if (staleNonHostUids.contains(st.players[i].id)) {
+            removedIndices.add(i);
+          }
         }
 
         if (removedIndices.isNotEmpty) {
@@ -358,7 +380,8 @@ class OnlineGameManager {
           }
 
           if (st.players.isEmpty) {
-            await _resetRoomToWaiting(tx, roomRef, data, clearPlayers: true, endedReason: '');
+            await _resetRoomToWaiting(tx, roomRef, data,
+                clearPlayers: true, endedReason: '');
             return;
           }
 
@@ -380,8 +403,11 @@ class OnlineGameManager {
             return;
           }
 
-          final int turnDuration = (data['turnDuration'] ?? 45) is num ? (data['turnDuration'] as num).toInt() : 45;
-          st.turnEndTime = DateTime.now().millisecondsSinceEpoch + (turnDuration * 1000);
+          final int turnDuration = (data['turnDuration'] ?? 45) is num
+              ? (data['turnDuration'] as num).toInt()
+              : 45;
+          st.turnEndTime =
+              DateTime.now().millisecondsSinceEpoch + (turnDuration * 1000);
         }
       }
 
@@ -397,18 +423,22 @@ class OnlineGameManager {
   // =========================
 
   Future<void> hostStartGame(
-      String roomId,
-      List<dynamic> playersList, {
-        required int targetScore,
-        required int turnDuration,
-      }) async {
+    String roomId,
+    List<dynamic> playersList, {
+    required int targetScore,
+    required int turnDuration,
+  }) async {
     final random = Random();
     final int playerCount = playersList.length;
 
     int tokensPerColor;
     int goldTokens = 5;
     if (playerCount <= 4) {
-      tokensPerColor = (playerCount == 2) ? 4 : (playerCount == 3) ? 5 : 7;
+      tokensPerColor = (playerCount == 2)
+          ? 4
+          : (playerCount == 3)
+              ? 5
+              : 7;
     } else {
       goldTokens = 9;
       tokensPerColor = playerCount * 2;
@@ -423,9 +453,12 @@ class OnlineGameManager {
       GemType.gold: goldTokens,
     };
 
-    final List<DevCard> d1 = List.from(FullGameData.level1Cards)..shuffle(random);
-    final List<DevCard> d2 = List.from(FullGameData.level2Cards)..shuffle(random);
-    final List<DevCard> d3 = List.from(FullGameData.level3Cards)..shuffle(random);
+    final List<DevCard> d1 = List.from(FullGameData.level1Cards)
+      ..shuffle(random);
+    final List<DevCard> d2 = List.from(FullGameData.level2Cards)
+      ..shuffle(random);
+    final List<DevCard> d3 = List.from(FullGameData.level3Cards)
+      ..shuffle(random);
 
     final List<String> vis1 = [];
     final List<String> vis2 = [];
@@ -441,32 +474,38 @@ class OnlineGameManager {
       draw(d3, vis3);
     }
 
-    final List<Noble> allNobles = List.from(FullGameData.nobles)..shuffle(random);
-    final List<String> visNobles = allNobles.take(playerCount + 1).map((n) => n.id).toList();
+    final List<Noble> allNobles = List.from(FullGameData.nobles)
+      ..shuffle(random);
+    final List<String> visNobles =
+        allNobles.take(playerCount + 1).map((n) => n.id).toList();
 
     final List<OnlinePlayerState> onlinePlayers = playersList
         .map((pData) => OnlinePlayerState(
-      id: (pData['uid'] ?? '').toString(),
-      name: (pData['name'] ?? 'Player').toString(),
-      avatarUrl: (pData['avatarUrl'] ?? pData['photoURL'] ?? pData['avatar'])?.toString(),
-      score: 0,
-      tokens: {for (var g in GemType.values) g: 0},
-      bonuses: {for (var g in GemType.values) g: 0},
-      purchasedCardIds: [],
-      reservedCardIds: [],
-      nobleIds: [],
-      lastActionTurnId: -1,
-    ))
+              id: (pData['uid'] ?? '').toString(),
+              name: (pData['name'] ?? 'Player').toString(),
+              avatarUrl:
+                  (pData['avatarUrl'] ?? pData['photoURL'] ?? pData['avatar'])
+                      ?.toString(),
+              score: 0,
+              tokens: {for (var g in GemType.values) g: 0},
+              bonuses: {for (var g in GemType.values) g: 0},
+              purchasedCardIds: [],
+              reservedCardIds: [],
+              nobleIds: [],
+              lastActionTurnId: -1,
+            ))
         .toList()
       ..shuffle(random);
 
-    final int endTime = DateTime.now().millisecondsSinceEpoch + (turnDuration * 1000);
+    final int endTime =
+        DateTime.now().millisecondsSinceEpoch + (turnDuration * 1000);
 
-    final roomRef = _firestore.collection(AppConstants.collectionRooms).doc(roomId);
+    final roomRef =
+        _firestore.collection(AppConstants.collectionRooms).doc(roomId);
     await _firestore.runTransaction((tx) async {
       final snap = await tx.get(roomRef);
       if (!snap.exists) return;
-      final data = (snap.data() ?? <String, dynamic>{}) as Map<String, dynamic>;
+      final data = snap.data() ?? <String, dynamic>{};
       final int sessionId = _getSessionId(data) + 1;
 
       tx.update(roomRef, {
@@ -502,10 +541,11 @@ class OnlineGameManager {
   int _totalTokensOf(OnlinePlayerState player) {
     return player.tokens.values.fold(0, (a, b) => a + b);
   }
+
   void _forceReturnExcessTokens(
-      OnlinePlayerState player,
-      GameStateSnapshot state,
-      ) {
+    OnlinePlayerState player,
+    GameStateSnapshot state,
+  ) {
     int excess = _totalTokensOf(player) - 10;
     if (excess <= 0) return;
 
@@ -526,69 +566,66 @@ class OnlineGameManager {
 
       final giveBack = have >= excess ? excess : have;
       player.tokens[type] = have - giveBack;
-      state.bankTokens[type] =
-          (state.bankTokens[type] ?? 0) + giveBack;
+      state.bankTokens[type] = (state.bankTokens[type] ?? 0) + giveBack;
       excess -= giveBack;
     }
   }
 
   Future<bool> playerTakeTokens(
-      String roomId,
-      String uid,
-      List<GemType> selectedTokens,
-      ) async {
+    String roomId,
+    String uid,
+    List<GemType> selectedTokens,
+  ) async {
     return await _runGameTransaction(roomId, uid,
-            (gameState, roomData, transaction) {
-          final player = gameState.players[gameState.currentPlayerIndex];
+        (gameState, roomData, transaction) {
+      final player = gameState.players[gameState.currentPlayerIndex];
 
-          // ===== VALIDATE COUNT =====
-          if (selectedTokens.isEmpty) return false;
-          if (selectedTokens.length > 3) return false;
+      // ===== VALIDATE COUNT =====
+      if (selectedTokens.isEmpty) return false;
+      if (selectedTokens.length > 3) return false;
 
-          // Đếm số lượng theo màu
-          final Map<GemType, int> counts = {};
-          for (final t in selectedTokens) {
-            if (t == GemType.gold) return false; // không lấy vàng trực tiếp
-            counts[t] = (counts[t] ?? 0) + 1;
-          }
-          // ===== LUẬT LẤY 2 CÙNG MÀU =====
-          if (counts.length == 1 && selectedTokens.length == 2) {
-            final GemType type = counts.keys.first;
-            final int bankCount = gameState.bankTokens[type] ?? 0;
-            if (bankCount < 4) return false;
-          }
-          // ===== LUẬT LẤY 3 KHÁC MÀU =====
-          if (counts.length != selectedTokens.length) {
-            // ví dụ: 2 đỏ + 1 xanh → cấm
-            return false;
-          }
-          // ===== CHECK BANK =====
-          for (final entry in counts.entries) {
-            final bankCount = gameState.bankTokens[entry.key] ?? 0;
-            if (bankCount < entry.value) return false;
-          }
-          // ===== CHECK GIỚI HẠN 10 TOKEN =====
-          final currentTotal = _totalTokensOf(player);
-          if (currentTotal + selectedTokens.length > 10) return false;
-          // ===== APPLY =====
-          for (final entry in counts.entries) {
-            final type = entry.key;
-            final amount = entry.value;
-            gameState.bankTokens[type] =
-                (gameState.bankTokens[type] ?? 0) - amount;
-            player.tokens[type] =
-                (player.tokens[type] ?? 0) + amount;
-          }
-          // Ép trả nếu vượt 10 (an toàn)
-          _forceReturnExcessTokens(player, gameState);
-          SoundManager().playToken();
-          return true;
-        });
+      // Đếm số lượng theo màu
+      final Map<GemType, int> counts = {};
+      for (final t in selectedTokens) {
+        if (t == GemType.gold) return false; // không lấy vàng trực tiếp
+        counts[t] = (counts[t] ?? 0) + 1;
+      }
+      // ===== LUẬT LẤY 2 CÙNG MÀU =====
+      if (counts.length == 1 && selectedTokens.length == 2) {
+        final GemType type = counts.keys.first;
+        final int bankCount = gameState.bankTokens[type] ?? 0;
+        if (bankCount < 4) return false;
+      }
+      // ===== LUẬT LẤY 3 KHÁC MÀU =====
+      if (counts.length != selectedTokens.length) {
+        // ví dụ: 2 đỏ + 1 xanh → cấm
+        return false;
+      }
+      // ===== CHECK BANK =====
+      for (final entry in counts.entries) {
+        final bankCount = gameState.bankTokens[entry.key] ?? 0;
+        if (bankCount < entry.value) return false;
+      }
+      // ===== CHECK GIỚI HẠN 10 TOKEN =====
+      final currentTotal = _totalTokensOf(player);
+      if (currentTotal + selectedTokens.length > 10) return false;
+      // ===== APPLY =====
+      for (final entry in counts.entries) {
+        final type = entry.key;
+        final amount = entry.value;
+        gameState.bankTokens[type] = (gameState.bankTokens[type] ?? 0) - amount;
+        player.tokens[type] = (player.tokens[type] ?? 0) + amount;
+      }
+      // Ép trả nếu vượt 10 (an toàn)
+      _forceReturnExcessTokens(player, gameState);
+      SoundManager().playToken();
+      return true;
+    });
   }
 
-
   Future<bool> playerBuyCard(String roomId, String uid, DevCard card) async {
-    return await _runGameTransaction(roomId, uid, (gameState, roomData, transaction) {
+    return await _runGameTransaction(roomId, uid,
+        (gameState, roomData, transaction) {
       final player = gameState.players[gameState.currentPlayerIndex];
 
       final Map<GemType, int> costToPay = {};
@@ -618,8 +655,10 @@ class OnlineGameManager {
       });
 
       if (goldNeeded > 0) {
-        player.tokens[GemType.gold] = (player.tokens[GemType.gold] ?? 0) - goldNeeded;
-        gameState.bankTokens[GemType.gold] = (gameState.bankTokens[GemType.gold] ?? 0) + goldNeeded;
+        player.tokens[GemType.gold] =
+            (player.tokens[GemType.gold] ?? 0) - goldNeeded;
+        gameState.bankTokens[GemType.gold] =
+            (gameState.bankTokens[GemType.gold] ?? 0) + goldNeeded;
       }
 
       // Logic xóa thẻ giam: Cần xử lý cả ID thường và ID có suffix _v (visible)
@@ -647,8 +686,10 @@ class OnlineGameManager {
   }
 
   // Giam từ BÀN -> Công khai (Thêm đuôi _v vào ID)
-  Future<bool> playerReserveCard(String roomId, String uid, DevCard card) async {
-    return await _runGameTransaction(roomId, uid, (gameState, roomData, transaction) {
+  Future<bool> playerReserveCard(
+      String roomId, String uid, DevCard card) async {
+    return await _runGameTransaction(roomId, uid,
+        (gameState, roomData, transaction) {
       final player = gameState.players[gameState.currentPlayerIndex];
       if (player.reservedCardIds.length >= 3) return false;
 
@@ -662,8 +703,7 @@ class OnlineGameManager {
 
       if (bankGold > 0 && totalTokens < 10) {
         gameState.bankTokens[GemType.gold] = bankGold - 1;
-        player.tokens[GemType.gold] =
-            (player.tokens[GemType.gold] ?? 0) + 1;
+        player.tokens[GemType.gold] = (player.tokens[GemType.gold] ?? 0) + 1;
       }
       _forceReturnExcessTokens(player, gameState);
       SoundManager().playClick();
@@ -672,8 +712,10 @@ class OnlineGameManager {
   }
 
   // Giam từ CHỒNG BÀI -> Bí mật (Giữ nguyên ID, không thêm _v)
-  Future<bool> playerReserveFromDeck(String roomId, String uid, int level) async {
-    return await _runGameTransaction(roomId, uid, (gameState, roomData, transaction) {
+  Future<bool> playerReserveFromDeck(
+      String roomId, String uid, int level) async {
+    return await _runGameTransaction(roomId, uid,
+        (gameState, roomData, transaction) {
       final player = gameState.players[gameState.currentPlayerIndex];
       if (player.reservedCardIds.length >= 3) return false;
 
@@ -702,8 +744,7 @@ class OnlineGameManager {
 
       if (bankGold > 0 && totalTokens < 10) {
         gameState.bankTokens[GemType.gold] = bankGold - 1;
-        player.tokens[GemType.gold] =
-            (player.tokens[GemType.gold] ?? 0) + 1;
+        player.tokens[GemType.gold] = (player.tokens[GemType.gold] ?? 0) + 1;
       }
       _forceReturnExcessTokens(player, gameState);
       SoundManager().playClick();
@@ -712,13 +753,14 @@ class OnlineGameManager {
   }
 
   Future<bool> _runGameTransaction(
-      String roomId,
-      String uid,
-      bool Function(GameStateSnapshot, Map<String, dynamic>, Transaction) action,
-      ) async {
+    String roomId,
+    String uid,
+    bool Function(GameStateSnapshot, Map<String, dynamic>, Transaction) action,
+  ) async {
     try {
       return await _firestore.runTransaction((transaction) async {
-        final roomRef = _firestore.collection(AppConstants.collectionRooms).doc(roomId);
+        final roomRef =
+            _firestore.collection(AppConstants.collectionRooms).doc(roomId);
         final snapshot = await transaction.get(roomRef);
         if (!snapshot.exists) return false;
 
@@ -754,12 +796,10 @@ class OnlineGameManager {
 
   void _advanceTurn(GameStateSnapshot state, Map<String, dynamic> roomData) {
     if (state.winnerId != null) return;
-    final int nextIndex =
-        (state.currentPlayerIndex + 1) % state.players.length;
+    final int nextIndex = (state.currentPlayerIndex + 1) % state.players.length;
 
     final int winningScore = (roomData['winningScore'] ?? 15) as int;
-    final int turnDuration =
-    (roomData['turnDuration'] ?? 45) is num
+    final int turnDuration = (roomData['turnDuration'] ?? 45) is num
         ? (roomData['turnDuration'] as num).toInt()
         : 45;
 
@@ -783,14 +823,13 @@ class OnlineGameManager {
         DateTime.now().millisecondsSinceEpoch + (turnDuration * 1000);
   }
 
-
   void _removeCardFromBoard(
-      GameStateSnapshot state,
-      String cardId,
-      Map<String, dynamic> roomData,
-      Transaction t,
-      String roomId,
-      ) {
+    GameStateSnapshot state,
+    String cardId,
+    Map<String, dynamic> roomData,
+    Transaction t,
+    String roomId,
+  ) {
     int lvl = 0;
     if (state.visibleLevel1.remove(cardId)) {
       lvl = 1;
@@ -822,13 +861,13 @@ class OnlineGameManager {
   void _checkNobles(OnlinePlayerState player, GameStateSnapshot state) {
     for (final String nId in List<String>.from(state.visibleNobles)) {
       final Noble n = FullGameData.nobles.firstWhere(
-            (x) => x.id == nId,
+        (x) => x.id == nId,
         orElse: () => FullGameData.nobles[0],
       );
 
       bool eligible = true;
-      n.requirements.forEach((type, count) {
-        if ((player.bonuses[type] ?? 0) < count) {
+      n.requirements.forEach((type, reqCount) {
+        if ((player.bonuses[type] ?? 0) < reqCount) {
           eligible = false;
         }
       });
@@ -844,13 +883,13 @@ class OnlineGameManager {
     }
   }
 
-
   // =========================
   // FORCE END TURN (TIMEOUT)
   // =========================
 
   Future<void> forceEndTurn(String roomId) async {
-    final roomRef = _firestore.collection(AppConstants.collectionRooms).doc(roomId);
+    final roomRef =
+        _firestore.collection(AppConstants.collectionRooms).doc(roomId);
     await _firestore.runTransaction((transaction) async {
       final snapshot = await transaction.get(roomRef);
       if (!snapshot.exists) return;

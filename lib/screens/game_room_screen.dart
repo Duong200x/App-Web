@@ -460,7 +460,7 @@ class _GameRoomScreenState extends State<GameRoomScreen>
                         'turnDuration': turnDuration,
                         'winningScore': winningScore,
                       });
-                      if (mounted) Navigator.pop(ctx);
+                      if (ctx.mounted) Navigator.pop(ctx);
                     } catch (e) {
                       _showSnack("Lỗi cập nhật: $e", isError: true);
                     }
@@ -654,14 +654,18 @@ class _GameRoomScreenState extends State<GameRoomScreen>
           }
         });
 
-        return WillPopScope(
-          onWillPop: () async {
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) async {
+            if (didPop) return;
             // khi đang waiting, bấm back => rời phòng trước
             if (status == 'waiting' && isInRoom) {
               await _leaveRoom(data, popAfter: true);
-              return false;
+            } else {
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
             }
-            return true;
           },
           child: Scaffold(
             backgroundColor: const Color(0xFF0D1117),
