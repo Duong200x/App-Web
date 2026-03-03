@@ -209,44 +209,6 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
     );
   }
 
-  void _confirmReserve(DevCard card) {
-    if (!_checkTurn()) return;
-
-    if (_game.players[0].reservedCards.length >= 3) {
-      _showTopToast("Đã giam tối đa 3 thẻ!", color: Colors.redAccent);
-      return;
-    }
-
-    _showCustomDialog(
-      title: "Xác nhận Giam thẻ?",
-      content: const Text(
-        "Bạn sẽ lấy thẻ này về tay.\nNếu ngân hàng còn Vàng, bạn sẽ nhận được 1 viên.",
-        style: TextStyle(color: Colors.white70),
-      ),
-      actions: [
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
-          onPressed: () {
-            Navigator.pop(context);
-            if (!_checkTurn()) return;
-
-            final error = _game.reserveCard(card);
-            if (error == null) {
-              _showTopToast("Đã giam thẻ thành công!", color: Colors.amber);
-              _playCardAnimation(card);
-            } else {
-              _showTopToast(error, color: Colors.redAccent);
-            }
-          },
-          child: const Text(
-            "Giam Ngay",
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ],
-    );
-  }
-
   // =========================
   // RESERVE HIDDEN (FROM DECK BACK)
   // =========================
@@ -544,12 +506,12 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                           decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.55),
+                            color: Colors.black.withValues(alpha: 0.55),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(color: Colors.white24),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.5),
+                                color: Colors.black.withValues(alpha: 0.5),
                                 blurRadius: 8,
                                 offset: const Offset(0, 4),
                               )
@@ -577,11 +539,11 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                             duration: const Duration(milliseconds: 300),
                             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                             decoration: BoxDecoration(
-                              color: _game.mustDiscardToken ? Colors.redAccent : _topMessageColor.withOpacity(0.9),
+                              color: _game.mustDiscardToken ? Colors.redAccent : _topMessageColor.withValues(alpha: 0.9),
                               borderRadius: BorderRadius.circular(30),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.5),
+                                  color: Colors.black.withValues(alpha: 0.5),
                                   blurRadius: 10,
                                   offset: const Offset(0, 4),
                                 )
@@ -605,7 +567,7 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                             decoration: BoxDecoration(
-                              color: Colors.amber.withOpacity(0.9),
+                              color: Colors.amber.withValues(alpha: 0.9),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: const Text(
@@ -620,7 +582,7 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
 
                     if (_previewCard != null)
                       Container(
-                        color: Colors.black.withOpacity(0.85),
+                        color: Colors.black.withValues(alpha: 0.85),
                         child: Center(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
@@ -777,7 +739,7 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
   Widget _buildBottomBar(Player user, double barHeight) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.6),
+        color: Colors.black.withValues(alpha: 0.6),
         border: const Border(top: BorderSide(color: Colors.white12)),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
@@ -1003,7 +965,7 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                     key: ValueKey(card.id),
                     decoration: isReserveMode
                         ? BoxDecoration(
-                            boxShadow: [BoxShadow(color: Colors.amber.withOpacity(0.6), blurRadius: 10, spreadRadius: 1)],
+                            boxShadow: [BoxShadow(color: Colors.amber.withValues(alpha: 0.6), blurRadius: 10, spreadRadius: 1)],
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(color: Colors.amber, width: 2),
                           )
@@ -1044,9 +1006,9 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
           margin: const EdgeInsets.symmetric(horizontal: 2),
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
+            color: Colors.white.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: player.color.withOpacity(0.3)),
+            border: Border.all(color: player.color.withValues(alpha: 0.3)),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -1087,9 +1049,9 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
           width: 95,
           padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
+            color: Colors.white.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: player.color.withOpacity(0.3)),
+            border: Border.all(color: player.color.withValues(alpha: 0.3)),
           ),
           child: Column(
             children: [
@@ -1172,9 +1134,9 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                   margin: const EdgeInsets.only(left: 8),
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
-                    color: Colors.yellowAccent.withOpacity(0.1),
+                    color: Colors.yellowAccent.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(4),
-                    border: Border.all(color: Colors.yellowAccent.withOpacity(0.5)),
+                    border: Border.all(color: Colors.yellowAccent.withValues(alpha: 0.5)),
                   ),
                   child: Row(
                     children: [
@@ -1200,7 +1162,7 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
       margin: isVertical ? const EdgeInsets.only(top: 4) : const EdgeInsets.only(left: 6),
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
       decoration: BoxDecoration(
-        color: Colors.amber.withOpacity(0.2),
+        color: Colors.amber.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(4),
         border: Border.all(color: Colors.amber),
       ),

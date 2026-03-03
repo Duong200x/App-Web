@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-import '../models/game_entities.dart';
 
 class GameCardBackWidget extends StatelessWidget {
   final int level; // Cấp 1, 2, hoặc 3
@@ -56,11 +55,11 @@ class GameCardBackWidget extends StatelessWidget {
         gradient: _getGradient(level), // Màu nền theo cấp độ
         borderRadius: BorderRadius.circular(width * 0.1),
         border: Border.all(
-            color: _getBorderColor(level).withOpacity(0.6),
+            color: _getBorderColor(level).withValues(alpha: 0.6),
             width: width > 150 ? 4 : 2
         ),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.6), blurRadius: 6, offset: const Offset(2, 3))
+          BoxShadow(color: Colors.black.withValues(alpha: 0.6), blurRadius: 6, offset: const Offset(2, 3))
         ],
       ),
       child: Stack(
@@ -76,7 +75,7 @@ class GameCardBackWidget extends StatelessWidget {
                 width: width,
                 height: width,
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white.withOpacity(0.1), width: width * 0.1),
+                  border: Border.all(color: Colors.white.withValues(alpha: 0.1), width: width * 0.1),
                 ),
               ),
             ),
@@ -89,7 +88,7 @@ class GameCardBackWidget extends StatelessWidget {
                 width: width * 0.8,
                 height: width * 0.8,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.05),
+                  color: Colors.white.withValues(alpha: 0.05),
                 ),
               ),
             ),
@@ -101,10 +100,10 @@ class GameCardBackWidget extends StatelessWidget {
             height: width * 0.6,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.white.withOpacity(0.3), width: 1.5),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
               gradient: RadialGradient(
                 colors: [
-                  Colors.white.withOpacity(0.2),
+                  Colors.white.withValues(alpha: 0.2),
                   Colors.transparent,
                 ],
               ),
@@ -119,7 +118,7 @@ class GameCardBackWidget extends StatelessWidget {
               Text(
                 "LEVEL",
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.6),
+                  color: Colors.white.withValues(alpha: 0.6),
                   fontSize: width * 0.08,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 2,

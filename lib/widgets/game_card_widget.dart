@@ -112,12 +112,12 @@ class _DevCardWidgetState extends State<DevCardWidget> with TickerProviderStateM
             color: baseColor,
             borderRadius: BorderRadius.circular(width * 0.1),
             boxShadow: [
-              BoxShadow(color: Colors.black.withOpacity(0.6), blurRadius: 6, offset: const Offset(2, 2))
+              BoxShadow(color: Colors.black.withValues(alpha: 0.6), blurRadius: 6, offset: const Offset(2, 2))
             ],
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [baseColor.withOpacity(0.95), baseColor.withOpacity(0.6)],
+              colors: [baseColor.withValues(alpha: 0.95), baseColor.withValues(alpha: 0.6)],
             ),
           ),
           child: Stack(
@@ -159,7 +159,7 @@ class _DevCardWidgetState extends State<DevCardWidget> with TickerProviderStateM
                 child: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    boxShadow: [BoxShadow(color: Colors.white.withOpacity(0.6), blurRadius: 12, spreadRadius: 2)],
+                    boxShadow: [BoxShadow(color: Colors.white.withValues(alpha: 0.6), blurRadius: 12, spreadRadius: 2)],
                   ),
                   child: Image.asset(GameAssets.getGemPath(card.bonus), width: iconSize, height: iconSize),
                 ),
@@ -174,7 +174,6 @@ class _DevCardWidgetState extends State<DevCardWidget> with TickerProviderStateM
                     mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start,
                     children: card.cost.entries.map((entry) {
                       // Logic màu chữ: Chữ đen cho dễ nhìn, TRỪ đá đen phải dùng chữ trắng
-                      bool isDarkGem = entry.key == GemType.black || entry.key == GemType.red;
                       Color textColor = (entry.key == GemType.black) ? Colors.white : Colors.black;
 
                       return Padding(
@@ -220,7 +219,7 @@ class _DevCardWidgetState extends State<DevCardWidget> with TickerProviderStateM
                           width: width * 0.06, height: width * 0.06,
                           decoration: BoxDecoration(
                             color: Colors.white, shape: BoxShape.circle,
-                            boxShadow: [BoxShadow(color: Colors.white.withOpacity(0.8), blurRadius: 4, spreadRadius: 1)],
+                            boxShadow: [BoxShadow(color: Colors.white.withValues(alpha: 0.8), blurRadius: 4, spreadRadius: 1)],
                           ),
                         ),
                       )

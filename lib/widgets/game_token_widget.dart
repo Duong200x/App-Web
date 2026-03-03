@@ -63,9 +63,9 @@ class _GameTokenWidgetState extends State<GameTokenWidget> with SingleTickerProv
     // Nếu là đá đen: Viền thành màu trắng xám, Vạch kẻ thành màu đen
     List<Color> rimColors = isBlackToken
         ? [Colors.grey.shade300, Colors.grey.shade400, Colors.grey.shade600] // Gradient trắng xám
-        : [gemColor, gemColor.withOpacity(0.8), Colors.black.withOpacity(0.6)]; // Gradient màu đá thường
+        : [gemColor, gemColor.withValues(alpha: 0.8), Colors.black.withValues(alpha: 0.6)]; // Gradient màu đá thường
 
-    Color stripeColor = isBlackToken ? Colors.black87 : Colors.white.withOpacity(0.9);
+    Color stripeColor = isBlackToken ? Colors.black87 : Colors.white.withValues(alpha: 0.9);
 
     return GestureDetector(
       onTap: _handleTap,
@@ -91,13 +91,13 @@ class _GameTokenWidgetState extends State<GameTokenWidget> with SingleTickerProv
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.6),
+                        color: Colors.black.withValues(alpha: 0.6),
                         blurRadius: 6,
                         offset: const Offset(2, 4),
                       ),
                       // Viền sáng nhẹ (Rim Light)
                       BoxShadow(
-                        color: Colors.white.withOpacity(0.4),
+                        color: Colors.white.withValues(alpha: 0.4),
                         blurRadius: 2,
                         offset: const Offset(-1, -1),
                         spreadRadius: 0,
@@ -121,7 +121,7 @@ class _GameTokenWidgetState extends State<GameTokenWidget> with SingleTickerProv
                             borderRadius: BorderRadius.circular(4),
                             boxShadow: [
                               if (isBlackToken) // Nếu vạch đen thì thêm viền trắng mỏng cho nổi
-                                BoxShadow(color: Colors.white.withOpacity(0.5), blurRadius: 1)
+                                BoxShadow(color: Colors.white.withValues(alpha: 0.5), blurRadius: 1)
                             ]
                         ),
                       ),
@@ -139,11 +139,11 @@ class _GameTokenWidgetState extends State<GameTokenWidget> with SingleTickerProv
                       shape: BoxShape.circle,
                       // Viền của lõi
                       border: Border.all(
-                          color: isBlackToken ? Colors.black54 : gemColor.withOpacity(0.5),
+                          color: isBlackToken ? Colors.black54 : gemColor.withValues(alpha: 0.5),
                           width: 1
                       ),
                       boxShadow: [
-                        BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 2, spreadRadius: 0, offset: const Offset(1,1))
+                        BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 2, spreadRadius: 0, offset: const Offset(1,1))
                       ],
                       gradient: const RadialGradient(
                         colors: [Colors.white, Color(0xFFE0E0E0)],
@@ -188,7 +188,7 @@ class _GameTokenWidgetState extends State<GameTokenWidget> with SingleTickerProv
                   Container(
                     width: size, height: size,
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.5),
+                      color: Colors.black.withValues(alpha: 0.5),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(Icons.lock_outline, color: Colors.white70, size: 28),

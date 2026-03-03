@@ -319,7 +319,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.amber, width: 2),
                       boxShadow: [
-                        BoxShadow(color: Colors.amber.withOpacity(0.5), blurRadius: 10)
+                        BoxShadow(color: Colors.amber.withValues(alpha: 0.5), blurRadius: 10)
                       ],
                     ),
                     child: CircleAvatar(
@@ -474,13 +474,13 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Container(
             height: 90,
             decoration: BoxDecoration(
-              color: color.withOpacity(0.15),
+              color: color.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: color.withOpacity(0.3)),
+              border: Border.all(color: color.withValues(alpha: 0.3)),
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [color.withOpacity(0.2), color.withOpacity(0.05)],
+                colors: [color.withValues(alpha: 0.2), color.withValues(alpha: 0.05)],
               ),
             ),
             child: Column(
@@ -506,7 +506,7 @@ class _HomeScreenState extends State<HomeScreen> {
       Map<String, dynamic> room, int playerCount, bool isFull) {
     Color borderColor = isFull ? Colors.redAccent : Colors.cyanAccent;
     Color glowColor =
-    isFull ? Colors.red.withOpacity(0.4) : Colors.cyanAccent.withOpacity(0.4);
+    isFull ? Colors.red.withValues(alpha: 0.4) : Colors.cyanAccent.withValues(alpha: 0.4);
 
     return Container(
       decoration: BoxDecoration(
@@ -583,8 +583,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
                   color: isFull
-                      ? Colors.red.withOpacity(0.2)
-                      : Colors.cyan.withOpacity(0.2),
+                      ? Colors.red.withValues(alpha: 0.2)
+                      : Colors.cyan.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(

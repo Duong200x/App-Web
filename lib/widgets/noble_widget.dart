@@ -79,7 +79,7 @@ class _NobleWidgetState extends State<NobleWidget> with TickerProviderStateMixin
                       transform: GradientRotation(_controller.value * 2 * math.pi),
                     ),
                     boxShadow: [
-                      BoxShadow(color: Colors.amber.withOpacity(0.4), blurRadius: 15, spreadRadius: 2)
+                      BoxShadow(color: Colors.amber.withValues(alpha: 0.4), blurRadius: 15, spreadRadius: 2)
                     ]
                 ),
               );
@@ -96,7 +96,7 @@ class _NobleWidgetState extends State<NobleWidget> with TickerProviderStateMixin
           decoration: BoxDecoration(
             color: const Color(0xFF3E2723),
             borderRadius: BorderRadius.circular(size * 0.08),
-            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.9), blurRadius: 4, offset: const Offset(2, 2))],
+            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.9), blurRadius: 4, offset: const Offset(2, 2))],
             gradient: const RadialGradient(
               center: Alignment.center, radius: 0.9,
               colors: [Color(0xFF5D4037), Color(0xFF210B08)],
@@ -129,7 +129,7 @@ class _NobleWidgetState extends State<NobleWidget> with TickerProviderStateMixin
                             color: Colors.white, fontSize: size * 0.35, fontWeight: FontWeight.w900, fontFamily: 'serif',
                             shadows: [
                               const Shadow(color: Colors.black, blurRadius: 4, offset: Offset(2, 2)),
-                              Shadow(color: Colors.amber.withOpacity(1), blurRadius: 15, offset: const Offset(0, 0)),
+                              const Shadow(color: Colors.amber, blurRadius: 15, offset: Offset(0, 0)),
                             ],
                           ),
                         ),
@@ -144,7 +144,7 @@ class _NobleWidgetState extends State<NobleWidget> with TickerProviderStateMixin
                           width: double.infinity,
                           padding: EdgeInsets.symmetric(vertical: size * 0.02, horizontal: size * 0.02),
                           decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.5),
+                              color: Colors.black.withValues(alpha: 0.5),
                               borderRadius: BorderRadius.circular(size * 0.04),
                               border: Border.all(color: Colors.white24, width: 0.5)
                           ),
@@ -187,7 +187,7 @@ class _NobleWidgetState extends State<NobleWidget> with TickerProviderStateMixin
                 child: Container(
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      boxShadow: [BoxShadow(color: Colors.amber.withOpacity(0.6), blurRadius: 15, spreadRadius: 2)]
+                      boxShadow: [BoxShadow(color: Colors.amber.withValues(alpha: 0.6), blurRadius: 15, spreadRadius: 2)]
                   ),
                   child: Text("👑", style: TextStyle(fontSize: size * 0.25, shadows: const [Shadow(color: Colors.black54, blurRadius: 5, offset: Offset(2, 2))])),
                 ),

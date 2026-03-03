@@ -696,7 +696,7 @@ class _GameRoomScreenState extends State<GameRoomScreen>
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.06),
+                      color: Colors.white.withValues(alpha: 0.06),
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(color: Colors.white12),
                     ),
@@ -727,7 +727,7 @@ class _GameRoomScreenState extends State<GameRoomScreen>
                     child: Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.04),
+                        color: Colors.white.withValues(alpha: 0.04),
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(color: Colors.white12),
                       ),
@@ -788,7 +788,7 @@ class _GameRoomScreenState extends State<GameRoomScreen>
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.06),
+                      color: Colors.white.withValues(alpha: 0.06),
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(color: Colors.white12),
                     ),

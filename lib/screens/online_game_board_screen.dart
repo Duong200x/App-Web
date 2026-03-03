@@ -744,37 +744,6 @@ class _OnlineGameBoardScreenState extends State<OnlineGameBoardScreen> {
     });
   }
 
-  void _playNobleAnimation(Noble noble) {
-    final RenderBox? nobleBox =
-        _nobleColumnKey.currentContext?.findRenderObject() as RenderBox?;
-    final RenderBox? profileBox =
-        _userProfileKey.currentContext?.findRenderObject() as RenderBox?;
-
-    final startOffset = nobleBox != null
-        ? nobleBox.localToGlobal(Offset.zero)
-        : const Offset(800, 100);
-    final endOffset = profileBox != null
-        ? profileBox.localToGlobal(Offset.zero)
-        : const Offset(50, 50);
-
-    setState(() {
-      _flyingAnimations.add(
-        FlyingCardAnimation(
-          key: UniqueKey(),
-          child: NobleWidget(noble: noble, size: 80),
-          startPos: startOffset,
-          endPos: endOffset,
-          onComplete: () {
-            if (!mounted) return;
-            setState(() {
-              if (_flyingAnimations.isNotEmpty) _flyingAnimations.removeAt(0);
-            });
-          },
-        ),
-      );
-    });
-  }
-
   // --- Helpers ---
 
   DevCard _card(String id) {
@@ -865,13 +834,13 @@ class _OnlineGameBoardScreenState extends State<OnlineGameBoardScreen> {
             : const EdgeInsets.only(left: 6),
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
         decoration: BoxDecoration(
-          color: Colors.yellowAccent.withOpacity(0.15),
+          color: Colors.yellowAccent.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(4),
           border: Border.all(
-              color: Colors.yellowAccent.withOpacity(0.8), width: 1.5),
+              color: Colors.yellowAccent.withValues(alpha: 0.8), width: 1.5),
           boxShadow: [
             BoxShadow(
-              color: Colors.yellowAccent.withOpacity(0.2),
+              color: Colors.yellowAccent.withValues(alpha: 0.2),
               blurRadius: 4,
             )
           ],
@@ -1089,7 +1058,7 @@ class _OnlineGameBoardScreenState extends State<OnlineGameBoardScreen> {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 8, vertical: 5),
                               decoration: BoxDecoration(
-                                color: Colors.black.withOpacity(0.65),
+                                color: Colors.black.withValues(alpha: 0.65),
                                 borderRadius: BorderRadius.circular(10),
                                 border: Border.all(
                                   color: !_isMicOn
@@ -1104,8 +1073,7 @@ class _OnlineGameBoardScreenState extends State<OnlineGameBoardScreen> {
                                 boxShadow: _isMicOn && _myVoiceLevel > 0.1
                                     ? [
                                         BoxShadow(
-                                          color: Colors.greenAccent.withOpacity(
-                                              0.3 + _myVoiceLevel * 0.4),
+                                          color: Colors.greenAccent.withValues(alpha: (0.3 + _myVoiceLevel * 0.4)),
                                           blurRadius: 4 + _myVoiceLevel * 8,
                                           spreadRadius: _myVoiceLevel * 4,
                                         )
@@ -1148,7 +1116,7 @@ class _OnlineGameBoardScreenState extends State<OnlineGameBoardScreen> {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 8, vertical: 5),
                               decoration: BoxDecoration(
-                                color: Colors.black.withOpacity(0.65),
+                                color: Colors.black.withValues(alpha: 0.65),
                                 borderRadius: BorderRadius.circular(10),
                                 border: Border.all(color: Colors.white24),
                               ),
@@ -1178,7 +1146,7 @@ class _OnlineGameBoardScreenState extends State<OnlineGameBoardScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 5),
                         decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.65),
+                          color: Colors.black.withValues(alpha: 0.65),
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
                             color: timeLeft <= 5
@@ -1210,11 +1178,11 @@ class _OnlineGameBoardScreenState extends State<OnlineGameBoardScreen> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 7),
                             decoration: BoxDecoration(
-                              color: _topMessageColor.withOpacity(0.92),
+                              color: _topMessageColor.withValues(alpha: 0.92),
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(
-                                    color: Colors.black.withOpacity(0.5),
+                                    color: Colors.black.withValues(alpha: 0.5),
                                     blurRadius: 10,
                                     offset: const Offset(0, 4))
                               ],
@@ -1242,7 +1210,7 @@ class _OnlineGameBoardScreenState extends State<OnlineGameBoardScreen> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 6),
                             decoration: BoxDecoration(
-                                color: Colors.amber.withOpacity(0.9),
+                                color: Colors.amber.withValues(alpha: 0.9),
                                 borderRadius: BorderRadius.circular(20)),
                             child: const Text("ĐANG CHỌN THẺ ĐỂ GIAM",
                                 style: TextStyle(
@@ -1254,7 +1222,7 @@ class _OnlineGameBoardScreenState extends State<OnlineGameBoardScreen> {
                     ..._flyingAnimations,
                     if (_previewCard != null)
                       Container(
-                        color: Colors.black.withOpacity(0.85),
+                        color: Colors.black.withValues(alpha: 0.85),
                         child: Center(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
@@ -1322,7 +1290,6 @@ class _OnlineGameBoardScreenState extends State<OnlineGameBoardScreen> {
   }
 
   Widget _buildVictoryScreen(Player winner) {
-    final bool isMe = winner.id == myUid;
     final bool isHost = (_roomData?['hostId'] ?? '') == myUid;
 
     SoundManager().stopBGM();
@@ -1506,7 +1473,7 @@ class _OnlineGameBoardScreenState extends State<OnlineGameBoardScreen> {
       Map<GemType, int> bankTokens, bool isMyTurn, int timeLeft) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.6),
+        color: Colors.black.withValues(alpha: 0.6),
         border: const Border(top: BorderSide(color: Colors.white12)),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
@@ -1725,7 +1692,7 @@ class _OnlineGameBoardScreenState extends State<OnlineGameBoardScreen> {
                     decoration: BoxDecoration(
                       boxShadow: [
                         BoxShadow(
-                            color: Colors.amber.withOpacity(0.6),
+                                    color: Colors.amber.withValues(alpha: 0.6),
                             blurRadius: 10,
                             spreadRadius: 1)
                       ],
@@ -1759,7 +1726,7 @@ class _OnlineGameBoardScreenState extends State<OnlineGameBoardScreen> {
                         ? BoxDecoration(
                             boxShadow: [
                               BoxShadow(
-                                  color: Colors.amber.withOpacity(0.6),
+                                  color: Colors.amber.withValues(alpha: 0.6),
                                   blurRadius: 10,
                                   spreadRadius: 1)
                             ],
@@ -1865,13 +1832,13 @@ class _OnlineGameBoardScreenState extends State<OnlineGameBoardScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
           decoration: BoxDecoration(
             color: player.isTurn
-                ? player.color.withOpacity(0.18)
-                : Colors.white.withOpacity(0.05),
+                ? player.color.withValues(alpha: 0.18)
+                : Colors.white.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: player.isTurn
-                  ? player.color.withOpacity(0.8)
-                  : player.color.withOpacity(0.25),
+                  ? player.color.withValues(alpha: 0.8)
+                  : player.color.withValues(alpha: 0.25),
               width: player.isTurn ? 1.5 : 1.0,
             ),
           ),
@@ -1979,13 +1946,13 @@ class _OnlineGameBoardScreenState extends State<OnlineGameBoardScreen> {
           padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
             color: player.isTurn
-                ? player.color.withOpacity(0.15)
-                : Colors.white.withOpacity(0.05),
+                ? player.color.withValues(alpha: 0.15)
+                : Colors.white.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: player.isTurn
-                  ? player.color.withOpacity(0.8)
-                  : player.color.withOpacity(0.25),
+                  ? player.color.withValues(alpha: 0.8)
+                  : player.color.withValues(alpha: 0.25),
               width: player.isTurn ? 1.5 : 1.0,
             ),
           ),
@@ -2114,7 +2081,7 @@ class _OnlineGameBoardScreenState extends State<OnlineGameBoardScreen> {
           : const EdgeInsets.only(left: 6),
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
       decoration: BoxDecoration(
-        color: Colors.amber.withOpacity(0.2),
+        color: Colors.amber.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(4),
         border: Border.all(color: Colors.amber),
       ),
