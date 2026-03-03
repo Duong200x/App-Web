@@ -1,5 +1,7 @@
 # Splendor Online (Flutter) + Firebase + Voice Chat
 
+![CI](https://github.com/Duong200x/App-Web/actions/workflows/ci.yml/badge.svg)
+
 Ứng dụng Flutter mô phỏng trò chơi **Splendor** dạng **chơi online nhiều người**, dùng **Firebase Auth + Firestore** để quản lý phòng/ván chơi và **Agora Voice** (mobile) để voice chat trong phòng.
 
 ## Tính năng chính
@@ -92,6 +94,14 @@ vercel dev
 ```
 
 4) Sửa URL API trong `lib/services/voice_service_mobile.dart` để trỏ về server của bạn.
+
+### Deploy token server lên Vercel (gợi ý)
+
+1) Deploy thư mục `agora-token-server/` lên Vercel (Import Project).
+2) Thêm Environment Variables trên Vercel:
+   - `AGORA_APP_ID`
+   - `AGORA_APP_CERTIFICATE`
+3) Lấy URL endpoint theo dạng `/api/token` và cập nhật trong `lib/services/voice_service_mobile.dart`.
 
 ## Cấu trúc thư mục (rút gọn)
 
