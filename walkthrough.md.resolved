@@ -1,0 +1,52 @@
+# ✅ Migration Complete: Firebase Functions → Vercel
+
+## Changes Made
+
+| Component | Change |
+|-----------|--------|
+| [agora-token-server/api/token.js](file:///d:/apptulam/splendor_fake/agora-token-server/api/token.js) | **[NEW]** Vercel serverless API |
+| [pubspec.yaml](file:///d:/apptulam/splendor_fake/pubspec.yaml) | Replaced `cloud_functions` → `http` |
+| [online_game_board_screen.dart](file:///d:/apptulam/splendor_fake/lib/screens/online_game_board_screen.dart) | Changed API call from Firebase → Vercel |
+| `functions/` folder | **[DELETED]** No longer needed |
+
+---
+
+## 🚀 Deploy to Vercel (3 Steps)
+
+### Step 1: Deploy
+```bash
+cd d:\apptulam\splendor_fake\agora-token-server
+npx vercel --prod
+```
+
+Lần đầu sẽ yêu cầu login → Chọn "Continue with GitHub/Email"
+
+### Step 2: Copy URL
+Sau khi deploy xong, Vercel trả về URL như:
+```
+https://agora-token-server-xxx.vercel.app
+```
+
+### Step 3: Update Flutter Code
+Mở [online_game_board_screen.dart](file:///d:/apptulam/splendor_fake/lib/screens/online_game_board_screen.dart) dòng **155-156**, thay:
+```dart
+const String vercelApiUrl =
+    'https://YOUR-VERCEL-APP.vercel.app/api/token';
+```
+thành URL thật của bạn.
+
+---
+
+## 🛠️ Voice Chat Fixes
+
+1. **Fixed Crash**: Added `try-catch` around `setEnableSpeakerphone` to prevent crashes on unsupported devices.
+2. **Visual Indicator**: Added **Glow Effect** to the microphone button.
+   - **Silent**: White icon, no glow.
+   - **Talking**: Green icon, pulsating green glow based on voice volume.
+
+## 💰 Cost
+
+| Service | Cost |
+|---------|------|
+| Firebase Functions | ❌ Requires Blaze (paid) |
+| **Vercel** | ✅ **FREE** (100k requests/day) |
