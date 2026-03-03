@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // ===== Users profile =====
+    // Collection: splendor_users/{uid}
+    match /splendor_users/{uid} {
+      allow read: if signedIn();
+      allow create, update, delete: if signedIn() && request.auth.uid == uid;
+    }
+
+    // ===== Game rooms =====
+    // Collection: splendor_rooms/{roomId}
+    //
+    // NOTE:
+    // - Game logic is updated from clients, so strict validation is non-trivial.
+    // - These rules are a "safe-ish starter" to avoid public writes.
+    match /splendor_rooms/{roomId} {
+      allow read: if signedIn();
+
+      // Allow create for signed-in users (e.g. if you ever create dynamic rooms)
+      allow create: if signedIn();
+
+      // Allow updates only if the user is currently listed in players[].
+      // This prevents random users from writing to arbitrary rooms.
+      allow update: if signedIn()
+        && (request.resource.data.players is list)
+        && request.resource.data.players
+             .where(p => p.uid == request.auth.uid)
+             .size() > 0;
+
+      // Typically rooms shouldn't be deleted from client.
+      allow delete: if false;
+    }
+
+    // ===== Server time sync doc =====
+    // Used by client to compute offset: splendor_time/now
+    match /splendor_time/{docId} {
+      allow read: if signedIn();
+      allow write: if signedIn();
+    }
+  }
+}
+

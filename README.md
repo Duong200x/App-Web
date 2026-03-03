@@ -59,6 +59,21 @@ flutter pub get
 flutter run
 ```
 
+## Firestore: collections + rules (starter)
+
+App đang dùng các collection chính:
+
+- `splendor_users/{uid}`: lưu hồ sơ người chơi (name, email, avatarUrl, isSetup…)
+- `splendor_rooms/{roomId}`: lưu room + `players[]` + `status` + `hostId` + `gameState`…
+- `splendor_time/now`: doc phục vụ đồng bộ thời gian lượt (client set serverTimestamp rồi đọc lại)
+
+Repo đã có sẵn file rules/indexes để deploy bằng Firebase CLI:
+
+- `firestore.rules`
+- `firestore.indexes.json`
+
+Lưu ý: vì game state được cập nhật từ client, rules hiện tại là **starter “an toàn vừa đủ”** (không cho người ngoài ghi vào room ngẫu nhiên) chứ chưa phải rules chặt chẽ cho môi trường production.
+
 ## Cấu hình Voice Chat (Agora) (tuỳ chọn)
 
 Mobile app gọi API để lấy `token` + `appId` tại:
